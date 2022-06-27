@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 namespace ProjectAPI.Controllers
 {
     [ApiController]
+
+
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
