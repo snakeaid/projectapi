@@ -48,7 +48,11 @@ namespace ProjectAPI.Controllers
             if (id == 1) return BadRequest("Category id cannot be 1");
             Category category = db.Categories.FirstOrDefault(c => c.Id == id);
             if (category == null) return NotFound();
-            db.Categories.Remove(category);
+
+            category.DateDeleted = DateTimeOffset.UtcNow;
+            db.Categories.Attach(category);
+            db.Entry(category).State = EntityState.Modified;
+
             await db.SaveChangesAsync();
             return Ok(category);
         }

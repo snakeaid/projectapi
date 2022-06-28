@@ -18,9 +18,14 @@ namespace ProjectAPI.Controllers
         public ProductsController(ApplicationContext context)
         {
             db = context;
-            if (!db.Categories.Any())
+            if (!db.Products.Any())
             {
-                db.Categories.Add(new Category { Name = "Uncategorized", Description = "Products without a specific category are stored here" });
+                if (!db.Categories.Any())
+                {
+                    db.Categories.Add(new Category { Name = "Uncategorized", Description = "Products without a specific category are stored here" });
+                    db.SaveChanges();
+                }
+                db.Products.Add(new Product { Name = "Default product", Description = "Product", CategoryId = 1 });
                 db.SaveChanges();
             }
         }
@@ -29,14 +34,14 @@ namespace ProjectAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> Get()
         {
-            return await db.Products.ToListAsync();
+            return await db.Products.Include(p => p.Category).ToListAsync();
         }
 
         //GET api/products/id
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> Get(int id)
         {
-            Product product = await db.Products.FirstOrDefaultAsync(p => p.Id == id);
+            Product product = await db.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
             if (product == null) return NotFound();
             return new ObjectResult(product);
         }
@@ -47,7 +52,11 @@ namespace ProjectAPI.Controllers
         {
             Product product = db.Products.FirstOrDefault(p => p.Id == id);
             if (product == null) return NotFound();
-            db.Products.Remove(product);
+
+            product.DateDeleted = DateTimeOffset.UtcNow;
+            db.Products.Attach(product);
+            db.Entry(product).State = EntityState.Modified;
+
             await db.SaveChangesAsync();
             return Ok(product);
         }

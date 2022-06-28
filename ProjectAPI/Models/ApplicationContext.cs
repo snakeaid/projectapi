@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,41 +14,67 @@ namespace ProjectAPI.Models
 		public ApplicationContext(DbContextOptions<ApplicationContext> options)
 			: base(options)
 		{
+			//Database.EnsureDeleted();
 			Database.EnsureCreated();
 		}
 
-		//реализация soft delete
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			modelBuilder.Entity<ISoftDelete>().HasQueryFilter(e => e.DeletedOn != null);
-		}
+        //реализация (не)вывода soft delete
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(Auditable).IsAssignableFrom(entityType.ClrType))
+                {
+                    var parameter = Expression.Parameter(entityType.ClrType, "p");
+                    var deletedCheck = Expression.Lambda(Expression.Equal(Expression.Property(parameter, "DateDeleted"), Expression.Constant(null)), parameter);
+                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(deletedCheck);
+                }
+            }
+            base.OnModelCreating(modelBuilder);
+        }
 
-		public override int SaveChanges()
+        public override int SaveChanges()
 		{
-			HandleSoftDelete();
+			var insertedEntries = this.ChangeTracker.Entries()
+													.Where(x => x.State == EntityState.Added)
+													.Select(x => x.Entity);
+			foreach (var insertedEntry in insertedEntries)
+			{
+				if (insertedEntry is Auditable auditableEntity)
+					auditableEntity.DateCreated = DateTimeOffset.UtcNow;
+			}
+			var modifiedEntries = this.ChangeTracker.Entries()
+													.Where(x => x.State == EntityState.Modified)
+													.Select(x => x.Entity);
+			foreach (var modifiedEntry in modifiedEntries)
+			{
+				if (modifiedEntry is Auditable auditableEntity)
+					auditableEntity.DateUpdated = DateTimeOffset.UtcNow;
+			}
+
 			return base.SaveChanges();
 		}
 
 		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken=default)
 		{
-			HandleSoftDelete();
-			return await base.SaveChangesAsync();
-		}
-
-		private void HandleSoftDelete()
-		{
-			var entities = ChangeTracker.Entries()
-								.Where(e => e.State == EntityState.Deleted);
-			foreach (var entity in entities)
+			var insertedEntries = this.ChangeTracker.Entries()
+													.Where(x => x.State == EntityState.Added)
+													.Select(x => x.Entity);
+			foreach (var insertedEntry in insertedEntries)
 			{
-				if (entity.Entity is ISoftDelete)
-				{
-					entity.State = EntityState.Modified;
-					var e = entity.Entity as ISoftDelete;
-					e.DeletedOn = DateTime.Now;
-				}
+				if(insertedEntry is Auditable auditableEntity)
+					auditableEntity.DateCreated = DateTimeOffset.UtcNow;
+			}
+			var modifiedEntries = this.ChangeTracker.Entries()
+													.Where(x => x.State == EntityState.Modified)
+													.Select(x => x.Entity);
+			foreach (var modifiedEntry in modifiedEntries)
+			{
+				if (modifiedEntry is Auditable auditableEntity)
+					auditableEntity.DateUpdated = DateTimeOffset.UtcNow;
 			}
 
+			return await base.SaveChangesAsync(cancellationToken);
 		}
 	}
 }
