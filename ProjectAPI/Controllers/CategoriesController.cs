@@ -71,20 +71,23 @@ namespace ProjectAPI.Controllers
             return Ok(category);
         }
 
-        //PUT api/categories/
-        [HttpPut]
-        public async Task<ActionResult<Category>> Put(Category category)
+        //PUT api/categories/id
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Product>> Put(int id, [FromBody] Category category)
         {
-            //if (category == null) return BadRequest();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (!db.Categories.Any(c => c.Id == category.Id)) return NotFound();
+            if (!db.Categories.Any(c => c.Id == id)) return NotFound();
 
-            db.Update(category);
+            Category entity = db.Categories.FirstOrDefault(c => c.Id == id);
+            db.Categories.Attach(entity);
+            entity.Name = category.Name;
+            entity.Description = category.Description;
+
             await db.SaveChangesAsync();
-            return Ok(category);
+            return Ok(entity);
         }
     }
 }
