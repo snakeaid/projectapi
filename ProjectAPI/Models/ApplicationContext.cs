@@ -16,6 +16,7 @@ namespace ProjectAPI.Models
 			Database.EnsureCreated();
 		}
 
+		//реализация soft delete
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<ISoftDelete>().HasQueryFilter(e => e.DeletedOn != null);

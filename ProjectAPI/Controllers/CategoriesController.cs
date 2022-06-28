@@ -45,6 +45,7 @@ namespace ProjectAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Category>> Delete(int id)
         {
+            if (id == 1) return BadRequest("Category id cannot be 1");
             Category category = db.Categories.FirstOrDefault(c => c.Id == id);
             if (category == null) return NotFound();
             db.Categories.Remove(category);

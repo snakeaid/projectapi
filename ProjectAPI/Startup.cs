@@ -26,9 +26,15 @@ namespace ProjectAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            string con = Configuration.GetConnectionString("MacConnection");
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(con));
-            services.AddControllers();
+            string config = Configuration.GetConnectionString("MacConnection");
+            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(config));
+
+            //отключение автоматической валидации
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+
+            //чтобы избежать JsonException: A possible object cycle was detected which is not supported.
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
