@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ProjectAPI.Models
 {
@@ -21,11 +23,17 @@ namespace ProjectAPI.Models
 
 		public override int SaveChanges()
 		{
-			HandleBookDelete();
+			HandleSoftDelete();
 			return base.SaveChanges();
 		}
 
-		private void HandleBookDelete()
+		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken=default)
+		{
+			HandleSoftDelete();
+			return await base.SaveChangesAsync();
+		}
+
+		private void HandleSoftDelete()
 		{
 			var entities = ChangeTracker.Entries()
 								.Where(e => e.State == EntityState.Deleted);

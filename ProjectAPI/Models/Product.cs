@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProjectAPI.Models
 {
 	public class Product : ISoftDelete
 	{
 		public int Id { get; set; }
+		[Required(ErrorMessage = "Product name is required")]
 		public string Name { get; set; }
 		public string? Description { get; set; }
 
