@@ -14,13 +14,13 @@ namespace ProjectAPI.Controllers
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        ApplicationContext db;
-        public CategoriesController(ApplicationContext context)
+        CatalogContext db;
+        public CategoriesController(CatalogContext context)
         {
             db = context;
             if(!db.Categories.Any())
             {
-                db.Categories.Add(new Category { Name="Uncategorized", Description="Products without a specific category are stored here" });
+                db.Categories.Add(new Category { Name = "Uncategorized", Description = "Products without a specific category are stored here" });
                 db.SaveChanges();
             }
         }
@@ -29,14 +29,14 @@ namespace ProjectAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> Get()
         {
-            return await db.Categories.ToListAsync();
+            return await db.Categories.Include(c => c.Products).ToListAsync();
         }
 
         //GET api/categories/id
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> Get(int id)
         {
-            Category category = await db.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            Category category = await db.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
             if (category == null) return NotFound();
             return new ObjectResult(category);
         }
@@ -81,14 +81,30 @@ namespace ProjectAPI.Controllers
             }
             if (!db.Categories.Any(c => c.Id == id)) return NotFound();
 
-            Category entity = db.Categories.FirstOrDefault(c => c.Id == id);
-            db.Categories.Attach(entity);
+            Category entity = db.Categories.Include(c => c.Products).FirstOrDefault(c => c.Id == id);
             entity.Name = category.Name;
             entity.Description = category.Description;
+
+            Dictionary<string, string> finalSpecifications;
+
+            foreach (Product product in entity.Products)
+            {
+                finalSpecifications = category.Specifications.ToDictionary(s => s, s => "");
+                foreach (KeyValuePair<string, string> keyValuePair in product.SpecificationData)
+                    if (finalSpecifications.ContainsKey(keyValuePair.Key)) finalSpecifications[keyValuePair.Key] = keyValuePair.Value;
+                product.SpecificationData = finalSpecifications;
+
+                db.Products.Attach(product);
+                db.Entry(product).State = EntityState.Modified;
+            }
+
+            entity.Specifications = category.Specifications;
+
+            db.Categories.Attach(entity);
+            db.Entry(entity).State = EntityState.Modified;
 
             await db.SaveChangesAsync();
             return Ok(entity);
         }
     }
-}
-
+}Invoke-RestMethod: {"type":"https://tools.ietf.org/html/rfc7231#section-6.5.4","title":"Not Found","status":404,"traceId":"|bf3ca9f4-4de3a06da448a298."}

@@ -27,7 +27,7 @@ namespace ProjectAPI
         public void ConfigureServices(IServiceCollection services)
         {
             string config = Configuration.GetConnectionString("MacConnection");
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(config));
+            services.AddDbContext<CatalogContext>(options => options.UseSqlServer(config));
 
             //отключение автоматической валидации
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });

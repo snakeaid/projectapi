@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -7,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace ProjectAPI.Models
 {
-	public class ApplicationContext : DbContext
+	public class CatalogContext : DbContext
 	{
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Product> Products { get; set; }
-		public ApplicationContext(DbContextOptions<ApplicationContext> options)
+		public CatalogContext(DbContextOptions<CatalogContext> options)
 			: base(options)
 		{
 			//Database.EnsureDeleted();
@@ -21,7 +23,7 @@ namespace ProjectAPI.Models
         //реализация (не)вывода soft delete
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+			foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 if (typeof(Auditable).IsAssignableFrom(entityType.ClrType))
                 {
@@ -31,7 +33,17 @@ namespace ProjectAPI.Models
                 }
             }
             base.OnModelCreating(modelBuilder);
-        }
+            modelBuilder.Entity<Product>()
+                        .Property(p => p.SpecificationData)
+                        .HasConversion(
+                            v => JsonConvert.SerializeObject(v),
+                            v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v));
+			modelBuilder.Entity<Category>()
+						.Property(c => c.Specifications)
+						.HasConversion(
+							v => JsonConvert.SerializeObject(v),
+							v => JsonConvert.DeserializeObject<List<string>>(v));
+		}
 
         public override int SaveChanges()
 		{

@@ -15,7 +15,7 @@ namespace ProjectAPI.Models
 		public Category Category { get; set; }
 
 		//product specification data
-		Dictionary<string, string> SpecificationData { get; set; }
+		public Dictionary<string, string> SpecificationData { get; set; } = new Dictionary<string, string>();
 	}
 }
 

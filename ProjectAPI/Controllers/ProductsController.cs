@@ -14,8 +14,8 @@ namespace ProjectAPI.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        ApplicationContext db;
-        public ProductsController(ApplicationContext context)
+        CatalogContext db;
+        public ProductsController(CatalogContext context)
         {
             db = context;
             if (!db.Products.Any())
@@ -53,6 +53,8 @@ namespace ProjectAPI.Controllers
             Product product = db.Products.FirstOrDefault(p => p.Id == id);
             if (product == null) return NotFound();
 
+            //удаление всех продуктов в категории?
+
             product.DateDeleted = DateTimeOffset.UtcNow;
             db.Products.Attach(product);
             db.Entry(product).State = EntityState.Modified;
@@ -71,6 +73,12 @@ namespace ProjectAPI.Controllers
                 return BadRequest(ModelState);
             }
             if (db.Categories.FirstOrDefault(c => c.Id == product.CategoryId) == null) product.CategoryId = 1;
+
+            Dictionary<string, string> finalSpecifications = db.Categories.FirstOrDefault(c => c.Id==product.CategoryId).Specifications.ToDictionary(s => s, s => "");
+            foreach (KeyValuePair<string, string> keyValuePair in product.SpecificationData)
+                if(finalSpecifications.ContainsKey(keyValuePair.Key)) finalSpecifications[keyValuePair.Key] = keyValuePair.Value;
+            product.SpecificationData = finalSpecifications;
+
             db.Products.Add(product);
             await db.SaveChangesAsync();
             return Ok(product);
@@ -88,14 +96,27 @@ namespace ProjectAPI.Controllers
             if (!db.Products.Any(p => p.Id == id)) return NotFound();
 
             Product entity = db.Products.FirstOrDefault(p => p.Id == id);
-            db.Products.Attach(entity);
             entity.Name = product.Name;
             entity.Description = product.Description;
-            entity.CategoryId = product.CategoryId;
+
+            if (entity.CategoryId == product.CategoryId)
+            {
+                foreach (KeyValuePair<string, string> keyValuePair in product.SpecificationData)
+                    if (entity.SpecificationData.ContainsKey(keyValuePair.Key)) entity.SpecificationData[keyValuePair.Key] = keyValuePair.Value;
+            }
+            else
+            {
+                entity.CategoryId = product.CategoryId;
+                Dictionary<string, string> finalSpecifications = db.Categories.FirstOrDefault(c => c.Id == entity.CategoryId).Specifications.ToDictionary(s => s, s => "");
+                foreach (KeyValuePair<string, string> keyValuePair in product.SpecificationData)
+                    if (finalSpecifications.ContainsKey(keyValuePair.Key)) finalSpecifications[keyValuePair.Key] = keyValuePair.Value;
+                entity.SpecificationData = finalSpecifications;
+            }
+            db.Products.Attach(entity);
+            db.Entry(entity).State = EntityState.Modified;
 
             await db.SaveChangesAsync();
             return Ok(entity);
         }
     }
 }
-

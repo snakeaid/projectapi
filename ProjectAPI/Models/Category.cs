@@ -14,7 +14,7 @@ namespace ProjectAPI.Models
 		public List<Product> Products { get; set; }
 
 		//product specification data
-		List<string> Specifications { get; set; }
+		public List<string> Specifications { get; set; } = new List<string>();
 	}
 }
 
