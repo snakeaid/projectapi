@@ -9,6 +9,7 @@
     <None Remove="Models\" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+    <None Remove="NReco.Logging.File" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -16,5 +17,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.26" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.26" />
+    <PackageReference Include="NReco.Logging.File" Version="1.1.5" />
   </ItemGroup>
 </Project>

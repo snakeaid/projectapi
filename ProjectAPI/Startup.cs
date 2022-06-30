@@ -32,6 +32,11 @@ namespace ProjectAPI
             //отключение автоматической валидации
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
+            //логирование
+            services.AddLogging(loggingBuilder => {
+                loggingBuilder.AddFile("app.log", append: true);
+            });
+
             //чтобы избежать JsonException: A possible object cycle was detected which is not supported.
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
