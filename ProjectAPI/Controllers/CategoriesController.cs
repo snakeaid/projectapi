@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using ProjectAPI.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using ProjectAPI.Models;
 
 namespace ProjectAPI.Controllers
 {
@@ -16,11 +17,13 @@ namespace ProjectAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
         CatalogContext db;
-        public CategoriesController(CatalogContext context, ILogger<CategoriesController> logger)
+        public CategoriesController(CatalogContext context, ILogger<CategoriesController> logger, IMapper mapper)
         {
-            _logger = logger;
             db = context;
+            _mapper = mapper;
+            _logger = logger;
             if(!db.Categories.Any())
             {
                 db.Categories.Add(new Category { Name = "Uncategorized", Description = "Products without a specific category are stored here" });
@@ -30,18 +33,19 @@ namespace ProjectAPI.Controllers
 
         //GET api/categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> Get()
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> Get()
         {
             _logger.LogInformation($"Getting all categories");
             var list = await db.Categories.Include(c => c.Products).ToListAsync();
+            var listDTO = _mapper.Map<List<CategoryDTO>>(list);
 
             _logger.LogInformation($"Got all categories sucessfully");
-            return list;
+            return Ok(listDTO);
         }
 
         //GET api/categories/id
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> Get(int id)
+        public async Task<ActionResult<CategoryDTO>> Get(int id)
         {
             _logger.LogInformation($"Getting category {id}");
             Category category = await db.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
@@ -50,9 +54,10 @@ namespace ProjectAPI.Controllers
                 _logger.LogWarning($"Category {id} NOT FOUND");
                 return NotFound();
             }
+            CategoryDTO categoryDTO = _mapper.Map<CategoryDTO>(category);
 
             _logger.LogInformation($"Got category {id} successfully");
-            return new ObjectResult(category);
+            return Ok(categoryDTO);
         }
 
         //DELETE api/categories/id
@@ -85,7 +90,7 @@ namespace ProjectAPI.Controllers
 
         //POST api/categories/
         [HttpPost]
-        public async Task<ActionResult<Category>> Post(Category category)
+        public async Task<ActionResult<CategoryDTO>> Post(CategoryDTO categoryDTO)
         {
             //if (category == null) return BadRequest();
             if (!ModelState.IsValid)
@@ -93,17 +98,19 @@ namespace ProjectAPI.Controllers
                 _logger.LogWarning($"Given category is invalid");
                 return BadRequest(ModelState);
             }
+
+            Category category = _mapper.Map<Category>(categoryDTO);
             db.Categories.Add(category);
             await db.SaveChangesAsync();
 
             //string categoryJson= JsonSerializer.Serialize(category);
             _logger.LogInformation($"Added category successfully");
-            return Ok(category);
+            return Ok(_mapper.Map<CategoryDTO>(category));
         }
 
         //PUT api/categories/id
         [HttpPut("{id}")]
-        public async Task<ActionResult<Product>> Put(int id, [FromBody] Category category)
+        public async Task<ActionResult<CategoryDTO>> Put(int id, [FromBody] CategoryDTO categoryDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -117,14 +124,14 @@ namespace ProjectAPI.Controllers
             }
 
             Category entity = db.Categories.Include(c => c.Products).FirstOrDefault(c => c.Id == id);
-            entity.Name = category.Name;
-            entity.Description = category.Description;
+            entity.Name = categoryDTO.Name;
+            entity.Description = categoryDTO.Description;
 
             Dictionary<string, string> finalSpecifications;
 
             foreach (Product product in entity.Products)
             {
-                finalSpecifications = category.Specifications.ToDictionary(s => s, s => "");
+                finalSpecifications = categoryDTO.Specifications.ToDictionary(s => s, s => "");
                 foreach (KeyValuePair<string, string> keyValuePair in product.SpecificationData)
                     if (finalSpecifications.ContainsKey(keyValuePair.Key)) finalSpecifications[keyValuePair.Key] = keyValuePair.Value;
                 product.SpecificationData = finalSpecifications;
@@ -133,7 +140,7 @@ namespace ProjectAPI.Controllers
                 db.Entry(product).State = EntityState.Modified;
             }
 
-            entity.Specifications = category.Specifications;
+            entity.Specifications = categoryDTO.Specifications;
 
             db.Categories.Attach(entity);
             db.Entry(entity).State = EntityState.Modified;
@@ -141,7 +148,7 @@ namespace ProjectAPI.Controllers
             await db.SaveChangesAsync();
 
             _logger.LogInformation($"Updated category {id} successfully");
-            return Ok(entity);
+            return Ok(_mapper.Map<CategoryDTO>(entity));
         }
     }
 }

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using ProjectAPI.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using ProjectAPI.Models;
 
 namespace ProjectAPI.Controllers
 {
@@ -16,11 +17,13 @@ namespace ProjectAPI.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
         CatalogContext db;
-        public ProductsController(CatalogContext context, ILogger<ProductsController> logger)
+        public ProductsController(CatalogContext context, ILogger<ProductsController> logger, IMapper mapper)
         {
-            _logger = logger;
             db = context;
+            _mapper = mapper;
+            _logger = logger;
             if (!db.Products.Any())
             {
                 //log?
@@ -39,18 +42,19 @@ namespace ProjectAPI.Controllers
 
         //GET api/products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> Get()
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> Get()
         {
             _logger.LogInformation($"Getting all products");
             var list = await db.Products.Include(p => p.Category).ToListAsync();
+            var listDTO = _mapper.Map<List<ProductDTO>>(list);
 
             _logger.LogInformation($"Got all products sucessfully");
-            return list;
+            return Ok(listDTO);
         }
 
         //GET api/products/id
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> Get(int id)
+        public async Task<ActionResult<ProductDTO>> Get(int id)
         {
             _logger.LogInformation($"Getting product {id}");
             Product product = await db.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
@@ -59,8 +63,10 @@ namespace ProjectAPI.Controllers
                 _logger.LogWarning($"Product {id} NOT FOUND");
                 return NotFound();
             }
+            ProductDTO productDTO = _mapper.Map<ProductDTO>(product);
+
             _logger.LogInformation($"Got product {id} successfully");
-            return new ObjectResult(product);
+            return Ok(productDTO);
         }
 
         //DELETE api/products/id
@@ -86,7 +92,7 @@ namespace ProjectAPI.Controllers
 
         //POST api/products/
         [HttpPost]
-        public async Task<ActionResult<Product>> Post(Product product)
+        public async Task<ActionResult<ProductDTO>> Post(ProductDTO productDTO)
         {
             //if (category == null) return BadRequest();
             if (!ModelState.IsValid)
@@ -94,38 +100,39 @@ namespace ProjectAPI.Controllers
                 _logger.LogWarning($"Given product is invalid");
                 return BadRequest(ModelState);
             }
-            if (db.Categories.FirstOrDefault(c => c.Id == product.CategoryId) == null)
+            if (db.Categories.FirstOrDefault(c => c.Id == productDTO.CategoryId) == null)
             {
-                _logger.LogWarning($"Category {product.CategoryId} NOT FOUND. Assigning category 1 to the product");
-                product.CategoryId = 1;
+                _logger.LogWarning($"Category {productDTO.CategoryId} NOT FOUND. Assigning category 1 to the product");
+                productDTO.CategoryId = 1;
             }
 
-            Dictionary<string, string> finalSpecifications = db.Categories.FirstOrDefault(c => c.Id==product.CategoryId).Specifications.ToDictionary(s => s, s => "");
-            foreach (KeyValuePair<string, string> keyValuePair in product.SpecificationData)
+            Dictionary<string, string> finalSpecifications = db.Categories.FirstOrDefault(c => c.Id==productDTO.CategoryId).Specifications.ToDictionary(s => s, s => "");
+            foreach (KeyValuePair<string, string> keyValuePair in productDTO.SpecificationData)
                 if(finalSpecifications.ContainsKey(keyValuePair.Key)) finalSpecifications[keyValuePair.Key] = keyValuePair.Value;
-            product.SpecificationData = finalSpecifications;
+            productDTO.SpecificationData = finalSpecifications;
 
+            Product product = _mapper.Map<Product>(productDTO);
             db.Products.Add(product);
             await db.SaveChangesAsync();
 
             //string productJson= JsonSerializer.Serialize(product);
             _logger.LogInformation($"Added product successfully");
-            return Ok(product);
+            return Ok(_mapper.Map<ProductDTO>(product));
         }
 
         //PUT api/products/id
         [HttpPut("{id}")]
-        public async Task<ActionResult<Product>> Put(int id, [FromBody] Product product)
+        public async Task<ActionResult<ProductDTO>> Put(int id, [FromBody] ProductDTO productDTO)
         {
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning($"Given product is invalid");
                 return BadRequest(ModelState);
             }
-            if (db.Categories.FirstOrDefault(c => c.Id == product.CategoryId) == null)
+            if (db.Categories.FirstOrDefault(c => c.Id == productDTO.CategoryId) == null)
             {
-                _logger.LogWarning($"Category {product.CategoryId} NOT FOUND. Assigning category 1 to the product");
-                product.CategoryId = 1;
+                _logger.LogWarning($"Category {productDTO.CategoryId} NOT FOUND. Assigning category 1 to the product");
+                productDTO.CategoryId = 1;
             }
             if (!db.Products.Any(p => p.Id == id))
             {
@@ -134,19 +141,19 @@ namespace ProjectAPI.Controllers
             }
 
             Product entity = db.Products.FirstOrDefault(p => p.Id == id);
-            entity.Name = product.Name;
-            entity.Description = product.Description;
+            entity.Name = productDTO.Name;
+            entity.Description = productDTO.Description;
 
-            if (entity.CategoryId == product.CategoryId)
+            if (entity.CategoryId == productDTO.CategoryId)
             {
-                foreach (KeyValuePair<string, string> keyValuePair in product.SpecificationData)
+                foreach (KeyValuePair<string, string> keyValuePair in productDTO.SpecificationData)
                     if (entity.SpecificationData.ContainsKey(keyValuePair.Key)) entity.SpecificationData[keyValuePair.Key] = keyValuePair.Value;
             }
             else
             {
-                entity.CategoryId = product.CategoryId;
+                entity.CategoryId = productDTO.CategoryId;
                 Dictionary<string, string> finalSpecifications = db.Categories.FirstOrDefault(c => c.Id == entity.CategoryId).Specifications.ToDictionary(s => s, s => "");
-                foreach (KeyValuePair<string, string> keyValuePair in product.SpecificationData)
+                foreach (KeyValuePair<string, string> keyValuePair in productDTO.SpecificationData)
                     if (finalSpecifications.ContainsKey(keyValuePair.Key)) finalSpecifications[keyValuePair.Key] = keyValuePair.Value;
                 entity.SpecificationData = finalSpecifications;
             }
@@ -156,7 +163,7 @@ namespace ProjectAPI.Controllers
             await db.SaveChangesAsync();
 
             _logger.LogInformation($"Updated product {id} successfully");
-            return Ok(entity);
+            return Ok(_mapper.Map<ProductDTO>(entity));
         }
     }
 }
