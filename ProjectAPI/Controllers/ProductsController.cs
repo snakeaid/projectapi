@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using ProjectAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectAPI.Controllers
 {
@@ -70,7 +71,7 @@ namespace ProjectAPI.Controllers
         }
 
         //DELETE api/products/id
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Manager")]
         public async Task<ActionResult<Product>> Delete(int id)
         {
             Product product = db.Products.FirstOrDefault(p => p.Id == id);
