@@ -8,4 +8,3 @@ namespace ProjectAPI.Models
 		public DateTimeOffset? DateDeleted { get; set; }
 	}
 }
-

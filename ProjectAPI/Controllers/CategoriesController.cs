@@ -7,6 +7,7 @@ using ProjectAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace ProjectAPI.Controllers
 {
@@ -14,9 +15,11 @@ namespace ProjectAPI.Controllers
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
     {
+        private readonly ILogger _logger;
         CatalogContext db;
-        public CategoriesController(CatalogContext context)
+        public CategoriesController(CatalogContext context, ILogger<CategoriesController> logger)
         {
+            _logger = logger;
             db = context;
             if(!db.Categories.Any())
             {
@@ -29,15 +32,26 @@ namespace ProjectAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> Get()
         {
-            return await db.Categories.Include(c => c.Products).ToListAsync();
+            _logger.LogInformation($"Getting all categories");
+            var list = await db.Categories.Include(c => c.Products).ToListAsync();
+
+            _logger.LogInformation($"Got all categories sucessfully");
+            return list;
         }
 
         //GET api/categories/id
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> Get(int id)
         {
+            _logger.LogInformation($"Getting category {id}");
             Category category = await db.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
-            if (category == null) return NotFound();
+            if (category == null)
+            {
+                _logger.LogWarning($"Category {id} NOT FOUND");
+                return NotFound();
+            }
+
+            _logger.LogInformation($"Got category {id} successfully");
             return new ObjectResult(category);
         }
 
@@ -45,15 +59,27 @@ namespace ProjectAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Category>> Delete(int id)
         {
-            if (id == 1) return BadRequest("Category id cannot be 1");
+            if (id == 1)
+            {
+                _logger.LogWarning($"Category 1 cannot be deleted");
+                return BadRequest("Category id cannot be 1");
+            }
             Category category = db.Categories.FirstOrDefault(c => c.Id == id);
-            if (category == null) return NotFound();
+            if (category == null)
+            {
+                _logger.LogWarning($"Category {id} NOT FOUND");
+                return NotFound();
+            }
+
+            //удаление всех продуктов в категории?
 
             category.DateDeleted = DateTimeOffset.UtcNow;
             db.Categories.Attach(category);
             db.Entry(category).State = EntityState.Modified;
 
             await db.SaveChangesAsync();
+
+            _logger.LogInformation($"Deleted category {id} successfully");
             return Ok(category);
         }
 
@@ -64,10 +90,14 @@ namespace ProjectAPI.Controllers
             //if (category == null) return BadRequest();
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning($"Given category is invalid");
                 return BadRequest(ModelState);
             }
             db.Categories.Add(category);
             await db.SaveChangesAsync();
+
+            //string categoryJson= JsonSerializer.Serialize(category);
+            _logger.LogInformation($"Added category successfully");
             return Ok(category);
         }
 
@@ -77,9 +107,14 @@ namespace ProjectAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning($"Given category is invalid");
                 return BadRequest(ModelState);
             }
-            if (!db.Categories.Any(c => c.Id == id)) return NotFound();
+            if (!db.Categories.Any(c => c.Id == id))
+            {
+                _logger.LogWarning($"Category {id} NOT FOUND");
+                return NotFound();
+            }
 
             Category entity = db.Categories.Include(c => c.Products).FirstOrDefault(c => c.Id == id);
             entity.Name = category.Name;
@@ -104,6 +139,8 @@ namespace ProjectAPI.Controllers
             db.Entry(entity).State = EntityState.Modified;
 
             await db.SaveChangesAsync();
+
+            _logger.LogInformation($"Updated category {id} successfully");
             return Ok(entity);
         }
     }

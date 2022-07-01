@@ -7,6 +7,7 @@ using ProjectAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace ProjectAPI.Controllers
 {
@@ -14,18 +15,24 @@ namespace ProjectAPI.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
+        private readonly ILogger _logger;
         CatalogContext db;
-        public ProductsController(CatalogContext context)
+        public ProductsController(CatalogContext context, ILogger<ProductsController> logger)
         {
+            _logger = logger;
             db = context;
             if (!db.Products.Any())
             {
+                //log?
                 if (!db.Categories.Any())
                 {
+                    //log?
                     db.Categories.Add(new Category { Name = "Uncategorized", Description = "Products without a specific category are stored here" });
                     db.SaveChanges();
+                    //log?
                 }
                 db.Products.Add(new Product { Name = "Default product", Description = "Product", CategoryId = 1 });
+                //log?
                 db.SaveChanges();
             }
         }
@@ -34,15 +41,25 @@ namespace ProjectAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> Get()
         {
-            return await db.Products.Include(p => p.Category).ToListAsync();
+            _logger.LogInformation($"Getting all products");
+            var list = await db.Products.Include(p => p.Category).ToListAsync();
+
+            _logger.LogInformation($"Got all products sucessfully");
+            return list;
         }
 
         //GET api/products/id
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> Get(int id)
         {
+            _logger.LogInformation($"Getting product {id}");
             Product product = await db.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
-            if (product == null) return NotFound();
+            if (product == null)
+            {
+                _logger.LogWarning($"Product {id} NOT FOUND");
+                return NotFound();
+            }
+            _logger.LogInformation($"Got product {id} successfully");
             return new ObjectResult(product);
         }
 
@@ -51,15 +68,19 @@ namespace ProjectAPI.Controllers
         public async Task<ActionResult<Product>> Delete(int id)
         {
             Product product = db.Products.FirstOrDefault(p => p.Id == id);
-            if (product == null) return NotFound();
-
-            //удаление всех продуктов в категории?
+            if (product == null)
+            {
+                _logger.LogWarning($"Product {id} NOT FOUND");
+                return NotFound();
+            }
 
             product.DateDeleted = DateTimeOffset.UtcNow;
             db.Products.Attach(product);
             db.Entry(product).State = EntityState.Modified;
 
             await db.SaveChangesAsync();
+
+            _logger.LogInformation($"Deleted product {id} successfully");
             return Ok(product);
         }
 
@@ -70,9 +91,14 @@ namespace ProjectAPI.Controllers
             //if (category == null) return BadRequest();
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning($"Given product is invalid");
                 return BadRequest(ModelState);
             }
-            if (db.Categories.FirstOrDefault(c => c.Id == product.CategoryId) == null) product.CategoryId = 1;
+            if (db.Categories.FirstOrDefault(c => c.Id == product.CategoryId) == null)
+            {
+                _logger.LogWarning($"Category {product.CategoryId} NOT FOUND. Assigning category 1 to the product");
+                product.CategoryId = 1;
+            }
 
             Dictionary<string, string> finalSpecifications = db.Categories.FirstOrDefault(c => c.Id==product.CategoryId).Specifications.ToDictionary(s => s, s => "");
             foreach (KeyValuePair<string, string> keyValuePair in product.SpecificationData)
@@ -81,6 +107,9 @@ namespace ProjectAPI.Controllers
 
             db.Products.Add(product);
             await db.SaveChangesAsync();
+
+            //string productJson= JsonSerializer.Serialize(product);
+            _logger.LogInformation($"Added product successfully");
             return Ok(product);
         }
 
@@ -90,10 +119,19 @@ namespace ProjectAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning($"Given product is invalid");
                 return BadRequest(ModelState);
             }
-            if (db.Categories.FirstOrDefault(c => c.Id == product.CategoryId) == null) product.CategoryId = 1;
-            if (!db.Products.Any(p => p.Id == id)) return NotFound();
+            if (db.Categories.FirstOrDefault(c => c.Id == product.CategoryId) == null)
+            {
+                _logger.LogWarning($"Category {product.CategoryId} NOT FOUND. Assigning category 1 to the product");
+                product.CategoryId = 1;
+            }
+            if (!db.Products.Any(p => p.Id == id))
+            {
+                _logger.LogWarning($"Product {id} NOT FOUND");
+                return NotFound();
+            }
 
             Product entity = db.Products.FirstOrDefault(p => p.Id == id);
             entity.Name = product.Name;
@@ -116,6 +154,8 @@ namespace ProjectAPI.Controllers
             db.Entry(entity).State = EntityState.Modified;
 
             await db.SaveChangesAsync();
+
+            _logger.LogInformation($"Updated product {id} successfully");
             return Ok(entity);
         }
     }

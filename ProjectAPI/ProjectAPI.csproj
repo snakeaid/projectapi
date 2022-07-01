@@ -10,6 +10,7 @@
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
     <None Remove="NReco.Logging.File" />
+    <None Remove="Serilog.Extensions.Logging.File" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

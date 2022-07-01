@@ -18,4 +18,3 @@ namespace ProjectAPI.Models
 		public Dictionary<string, string> SpecificationData { get; set; } = new Dictionary<string, string>();
 	}
 }
-

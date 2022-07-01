@@ -32,9 +32,24 @@ namespace ProjectAPI
             //отключение автоматической валидации
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
-            //логирование
+            //логирование - https://github.com/nreco/logging
             services.AddLogging(loggingBuilder => {
-                loggingBuilder.AddFile("app.log", append: true);
+                loggingBuilder.AddFile("Logs/app_{0:yyyy}-{0:MM}-{0:dd}.log", fileLoggerOpts => {
+                    fileLoggerOpts.FormatLogFileName = fName => {
+                        return String.Format(fName, DateTime.UtcNow);
+                    };
+                });
+            });
+            //services.AddLogging(loggingBuilder => {
+            //    loggingBuilder.AddFile("app.log", append: true);
+            //});
+
+            services.AddLogging(loggingBuilder => {
+                loggingBuilder.AddFile("Logs/app_{0:yyyy}-{0:MM}-{0:dd}.log", fileLoggerOpts => {
+                    fileLoggerOpts.FormatLogFileName = fName => {
+                        return String.Format(fName, DateTime.UtcNow);
+                    };
+                });
             });
 
             //чтобы избежать JsonException: A possible object cycle was detected which is not supported.
@@ -62,4 +77,3 @@ namespace ProjectAPI
         }
     }
 }
-
