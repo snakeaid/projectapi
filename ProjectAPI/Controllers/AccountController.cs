@@ -6,19 +6,28 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using ProjectAPI.Models;
+using Microsoft.Extensions.Logging;
 
 namespace ProjectAPI.Controllers
 {
 	public class AccountController : Controller
 	{
 		List<Person> people = new List<Person> { new Person { Login = "manager", Password = "12345", Role = "Manager" } };
+		private readonly ILogger _logger;
+
+		public AccountController(ILogger<AccountController> logger)
+        {
+			_logger = logger;
+        }
 
 		[HttpPost("/token")]
 		public IActionResult Token(string username, string password)
         {
+			_logger.LogInformation($"Generating token for {username}");
 			var identity = GetIdentity(username, password);
 			if (identity==null)
             {
+				_logger.LogWarning($"Invalid username or password.");
 				return BadRequest(new { errorText = "Invalid username or password." });
 			}
 
@@ -37,6 +46,8 @@ namespace ProjectAPI.Controllers
 				access_token = encodedJwt,
 				username = identity.Name
 			};
+
+			_logger.LogInformation($"Generated token for {username} successfully.");
 
 			return Json(response);
 		}
