@@ -8,33 +8,36 @@ using ProjectAPI.DataAccess.Primitives;
 using ProjectAPI.Primitives;
 using ProjectAPI.BusinessLogic.Requests;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
-	public class GetProductHandler : IRequestHandler<GetProductRequest, ProductDTO>
+	public class GetProductHandler : IRequestHandler<GetProductRequest, ProductModel>
     {
         private readonly CatalogContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public GetProductHandler(CatalogContext context, IMapper mapper)
+        public GetProductHandler(CatalogContext context, IMapper mapper, ILogger<GetProductHandler> logger)
         {
+            _logger = logger;
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task<ProductDTO> Handle(GetProductRequest request, CancellationToken cancellationToken)
+        public async Task<ProductModel> Handle(GetProductRequest request, CancellationToken cancellationToken)
         {
-            //_logger.LogInformation($"Getting product {request.Id}");
+            _logger.LogInformation($"Getting product {request.Id}");
             Product product = await _context.Products.FirstOrDefaultAsync(p => p.Id == request.Id);
             if (product == null)
             {
-                //_logger.LogWarning($"Product {request.Id} NOT FOUND");
+                _logger.LogWarning($"Product {request.Id} NOT FOUND");
                 throw new KeyNotFoundException();
             }
-            ProductDTO productDTO = _mapper.Map<ProductDTO>(product);
+            ProductModel productModel = _mapper.Map<ProductModel>(product);
 
-            //_logger.LogInformation($"Got product {request.Id} successfully");
-            return productDTO;
+            _logger.LogInformation($"Got product {request.Id} successfully");
+            return productModel;
         }
     }
 }

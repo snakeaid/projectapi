@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAPI.Mapping", "Proje
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAPI.BusinessLogic", "ProjectAPI.BusinessLogic\ProjectAPI.BusinessLogic.csproj", "{FE74E604-651F-4995-800B-F0F48A7A77D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAPI.DataAccess.Primitives.Abstractions", "ProjectAPI.Abstractions\ProjectAPI.DataAccess.Primitives.Abstractions.csproj", "{F1D5E3C9-C2EB-4F25-A91D-E497B8622DE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAPI.ModelValidation", "ProjectAPI.ModelValidation\ProjectAPI.ModelValidation.csproj", "{6ECA8618-9409-4B2B-85CB-444149EE11DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{FE74E604-651F-4995-800B-F0F48A7A77D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE74E604-651F-4995-800B-F0F48A7A77D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE74E604-651F-4995-800B-F0F48A7A77D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1D5E3C9-C2EB-4F25-A91D-E497B8622DE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1D5E3C9-C2EB-4F25-A91D-E497B8622DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1D5E3C9-C2EB-4F25-A91D-E497B8622DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1D5E3C9-C2EB-4F25-A91D-E497B8622DE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ECA8618-9409-4B2B-85CB-444149EE11DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ECA8618-9409-4B2B-85CB-444149EE11DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ECA8618-9409-4B2B-85CB-444149EE11DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ECA8618-9409-4B2B-85CB-444149EE11DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

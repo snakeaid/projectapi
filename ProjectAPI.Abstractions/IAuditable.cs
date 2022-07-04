@@ -2,7 +2,7 @@
 
 namespace ProjectAPI.DataAccess.Primitives.Abstractions
 {
-	public abstract class Auditable
+	public interface IAuditable
 	{
 		public DateTimeOffset DateCreated { get; set; }
 		public DateTimeOffset? DateUpdated { get; set; }

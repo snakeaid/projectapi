@@ -3,8 +3,8 @@ using ProjectAPI.Primitives;
 
 namespace ProjectAPI.BusinessLogic.Requests
 {
-    public class PostProductRequest : IRequest<ProductDTO>
+    public class PostProductRequest : IRequest<ProductModel>
     {
-        public ProductDTO ProductDTO { get; set; }
+        public ProductModel ProductModel { get; set; }
     }
 }

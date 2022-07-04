@@ -7,12 +7,11 @@
 
   <ItemGroup>
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
-    <None Remove="Abstractions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.26" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Abstractions\" />
+    <ProjectReference Include="..\ProjectAPI.Abstractions\ProjectAPI.DataAccess.Primitives.Abstractions.csproj" />
   </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@ using ProjectAPI.Primitives;
 
 namespace ProjectAPI.BusinessLogic.Requests
 {
-	public class GetAllProductsRequest : IRequest<List<ProductDTO>>
+	public class GetAllProductsRequest : IRequest<List<ProductModel>>
     {
         public int Id { get; set; }
     }

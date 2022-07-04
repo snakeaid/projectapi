@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ProjectAPI.DataAccess.Primitives.Abstractions;
 
 namespace ProjectAPI.DataAccess.Primitives
 {
-	public class Product : Auditable
+	public class Product : IAuditable
 	{
 		public int Id { get; set; }
 		[Required(ErrorMessage = "Product name is required")]
@@ -13,6 +14,10 @@ namespace ProjectAPI.DataAccess.Primitives
 
 		public int CategoryId { get; set; }
 		public Category Category { get; set; }
+
+		public DateTimeOffset DateCreated { get; set; }
+		public DateTimeOffset? DateUpdated { get; set; }
+		public DateTimeOffset? DateDeleted { get; set; }
 
 		//product specification data
 		public Dictionary<string, string> SpecificationData { get; set; } = new Dictionary<string, string>();

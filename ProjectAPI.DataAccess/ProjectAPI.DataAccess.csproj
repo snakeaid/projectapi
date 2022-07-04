@@ -16,5 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectAPI.DataAccess.Primitives\ProjectAPI.DataAccess.Primitives.csproj" />
+    <ProjectReference Include="..\ProjectAPI.Abstractions\ProjectAPI.DataAccess.Primitives.Abstractions.csproj" />
   </ItemGroup>
 </Project>

@@ -8,18 +8,18 @@ namespace ProjectAPI.Mapping
 	{
 		public AllMappersProfile()
 		{
-			CreateMap<Product, ProductDTO>();
-			CreateMap<Category, CategoryDTO>();
+			CreateMap<Product, ProductModel>();
+			CreateMap<Category, CategoryModel>();
 
-			CreateMap<ProductDTO, Product>().ForMember(p => p.DateCreated, opts => opts.Ignore())
+			CreateMap<ProductModel, Product>().ForMember(p => p.DateCreated, opts => opts.Ignore())
 											.ForMember(p => p.DateUpdated, opts => opts.Ignore())
 											.ForMember(p => p.Id, opts => opts.Ignore());
 			//								.ForMember(p => p.Category, opts => opts.Ignore());
 
-			CreateMap<CategoryDTO, Category>().ForMember(c => c.DateCreated, opts => opts.Ignore())
-											  .ForMember(c => c.DateUpdated, opts => opts.Ignore());
+			CreateMap<CategoryModel, Category>().ForMember(c => c.DateCreated, opts => opts.Ignore())
+											  .ForMember(c => c.DateUpdated, opts => opts.Ignore())
+											  .ForMember(c => c.Id, opts => opts.Ignore());
 			//								  .ForMember(c => c.Products, opts => opts.Ignore());
 		}
 	}
 }
-
