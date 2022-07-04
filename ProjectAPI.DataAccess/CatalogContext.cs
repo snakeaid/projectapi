@@ -6,8 +6,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using ProjectAPI.DataAccess.Primitives;
+using ProjectAPI.DataAccess.Primitives.Abstractions;
 
-namespace ProjectAPI.Models
+namespace ProjectAPI.DataAccess
 {
 	public class CatalogContext : DbContext
 	{
@@ -16,28 +18,28 @@ namespace ProjectAPI.Models
 		public CatalogContext(DbContextOptions<CatalogContext> options)
 			: base(options)
 		{
-//			Database.EnsureDeleted();
+			//			Database.EnsureDeleted();
 			Database.EnsureCreated();
 		}
 
-        //реализация (не)вывода soft delete
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+		//реализация (не)вывода soft delete
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
 			foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                if (typeof(Auditable).IsAssignableFrom(entityType.ClrType))
-                {
-                    var parameter = Expression.Parameter(entityType.ClrType, "p");
-                    var deletedCheck = Expression.Lambda(Expression.Equal(Expression.Property(parameter, "DateDeleted"), Expression.Constant(null)), parameter);
-                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(deletedCheck);
-                }
-            }
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Product>()
-                        .Property(p => p.SpecificationData)
-                        .HasConversion(
-                            v => JsonConvert.SerializeObject(v),
-                            v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v));
+			{
+				if (typeof(Auditable).IsAssignableFrom(entityType.ClrType))
+				{
+					var parameter = Expression.Parameter(entityType.ClrType, "p");
+					var deletedCheck = Expression.Lambda(Expression.Equal(Expression.Property(parameter, "DateDeleted"), Expression.Constant(null)), parameter);
+					modelBuilder.Entity(entityType.ClrType).HasQueryFilter(deletedCheck);
+				}
+			}
+			base.OnModelCreating(modelBuilder);
+			modelBuilder.Entity<Product>()
+						.Property(p => p.SpecificationData)
+						.HasConversion(
+							v => JsonConvert.SerializeObject(v),
+							v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v));
 			modelBuilder.Entity<Category>()
 						.Property(c => c.Specifications)
 						.HasConversion(
@@ -45,7 +47,7 @@ namespace ProjectAPI.Models
 							v => JsonConvert.DeserializeObject<List<string>>(v));
 		}
 
-        public override int SaveChanges()
+		public override int SaveChanges()
 		{
 			var insertedEntries = this.ChangeTracker.Entries()
 													.Where(x => x.State == EntityState.Added)
@@ -67,14 +69,14 @@ namespace ProjectAPI.Models
 			return base.SaveChanges();
 		}
 
-		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken=default)
+		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 		{
 			var insertedEntries = this.ChangeTracker.Entries()
 													.Where(x => x.State == EntityState.Added)
 													.Select(x => x.Entity);
 			foreach (var insertedEntry in insertedEntries)
 			{
-				if(insertedEntry is Auditable auditableEntity)
+				if (insertedEntry is Auditable auditableEntity)
 					auditableEntity.DateCreated = DateTimeOffset.UtcNow;
 			}
 			var modifiedEntries = this.ChangeTracker.Entries()

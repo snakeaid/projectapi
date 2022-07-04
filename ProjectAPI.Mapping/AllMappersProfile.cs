@@ -1,8 +1,8 @@
-﻿using System;
-using AutoMapper;
-using ProjectAPI.Models;
+﻿using AutoMapper;
+using ProjectAPI.DataAccess.Primitives;
+using ProjectAPI.Primitives;
 
-namespace ProjectAPI.Mappers
+namespace ProjectAPI.Mapping
 {
 	public class AllMappersProfile : Profile
 	{

@@ -1,5 +1,4 @@
-﻿using System;
-namespace ProjectAPI.Models
+﻿namespace ProjectAPI.Models
 {
 	public class Person
 	{

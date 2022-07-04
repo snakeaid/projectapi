@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using ProjectAPI.DataAccess.Primitives.Abstractions;
 
-namespace ProjectAPI.Models
+namespace ProjectAPI.DataAccess.Primitives
 {
 	public class Product : Auditable
 	{
@@ -13,7 +12,6 @@ namespace ProjectAPI.Models
 		public string? Description { get; set; }
 
 		public int CategoryId { get; set; }
-		[ForeignKey("CategoryId")]
 		public Category Category { get; set; }
 
 		//product specification data
