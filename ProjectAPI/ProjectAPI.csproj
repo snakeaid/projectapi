@@ -15,6 +15,7 @@
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="System.IdentityModel.Tokens.Jwt" />
     <None Remove="Newtonsoft.Json" />
+    <None Remove="MediatR.Extensions.Microsoft.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Primitives\" />
@@ -27,12 +28,22 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.26" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ProjectAPI.DataAccess\ProjectAPI.DataAccess.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectAPI.DataAccess.Primitives\ProjectAPI.DataAccess.Primitives.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectAPI.Primitives\ProjectAPI.Primitives.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectAPI.Mapping\ProjectAPI.Mapping.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectAPI.DataAccess\ProjectAPI.DataAccess.csproj">
+    <ProjectReference Include="..\ProjectAPI.BusinessLogic\ProjectAPI.BusinessLogic.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
