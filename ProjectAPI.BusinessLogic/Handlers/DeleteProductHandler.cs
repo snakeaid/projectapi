@@ -4,28 +4,35 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using MediatR;
+using AutoMapper;
 using ProjectAPI.DataAccess;
 using ProjectAPI.DataAccess.Primitives;
+using ProjectAPI.Primitives;
 using ProjectAPI.BusinessLogic.Requests;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
-    public class DeleteProductHandler : IRequestHandler<DeleteProductRequest, Product>
+    public class DeleteProductHandler : IRequestHandler<DeleteProductRequest, ProductModel>
     {
         private readonly CatalogContext _context;
+        private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public DeleteProductHandler(CatalogContext context)
+        public DeleteProductHandler(CatalogContext context, IMapper mapper, ILogger<DeleteProductHandler> logger)
         {
             _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
 
-        public async Task<Product> Handle(DeleteProductRequest request, CancellationToken cancellationToken)
+        public async Task<ProductModel> Handle(DeleteProductRequest request, CancellationToken cancellationToken)
         {
             Product product = _context.Products.FirstOrDefault(p => p.Id == request.Id);
             if (product == null)
             {
-                //_logger.LogWarning($"Product {id} NOT FOUND");
+                _logger.LogWarning($"Product {request.Id} NOT FOUND");
                 throw new KeyNotFoundException();
             }
 
@@ -35,8 +42,8 @@ namespace ProjectAPI.BusinessLogic.Handlers
 
             await _context.SaveChangesAsync();
 
-            return product;
-            //_logger.LogInformation($"Deleted product {id} successfully");
+            _logger.LogInformation($"Deleted product {request.Id} successfully");
+            return _mapper.Map<ProductModel>(product);
         }
     }
 }

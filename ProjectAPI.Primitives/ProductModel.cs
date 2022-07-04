@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProjectAPI.Primitives
 {
-	public class ProductDTO
+	public class ProductModel
 	{
 		public int Id { get; set; }
 		[Required(ErrorMessage = "Product name is required")]

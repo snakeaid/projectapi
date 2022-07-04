@@ -27,7 +27,7 @@ namespace ProjectAPI.DataAccess
 		{
 			foreach (var entityType in modelBuilder.Model.GetEntityTypes())
 			{
-				if (typeof(Auditable).IsAssignableFrom(entityType.ClrType))
+				if (typeof(IAuditable).IsAssignableFrom(entityType.ClrType))
 				{
 					var parameter = Expression.Parameter(entityType.ClrType, "p");
 					var deletedCheck = Expression.Lambda(Expression.Equal(Expression.Property(parameter, "DateDeleted"), Expression.Constant(null)), parameter);
@@ -54,7 +54,7 @@ namespace ProjectAPI.DataAccess
 													.Select(x => x.Entity);
 			foreach (var insertedEntry in insertedEntries)
 			{
-				if (insertedEntry is Auditable auditableEntity)
+				if (insertedEntry is IAuditable auditableEntity)
 					auditableEntity.DateCreated = DateTimeOffset.UtcNow;
 			}
 			var modifiedEntries = this.ChangeTracker.Entries()
@@ -62,7 +62,7 @@ namespace ProjectAPI.DataAccess
 													.Select(x => x.Entity);
 			foreach (var modifiedEntry in modifiedEntries)
 			{
-				if (modifiedEntry is Auditable auditableEntity)
+				if (modifiedEntry is IAuditable auditableEntity)
 					auditableEntity.DateUpdated = DateTimeOffset.UtcNow;
 			}
 
@@ -76,7 +76,7 @@ namespace ProjectAPI.DataAccess
 													.Select(x => x.Entity);
 			foreach (var insertedEntry in insertedEntries)
 			{
-				if (insertedEntry is Auditable auditableEntity)
+				if (insertedEntry is IAuditable auditableEntity)
 					auditableEntity.DateCreated = DateTimeOffset.UtcNow;
 			}
 			var modifiedEntries = this.ChangeTracker.Entries()
@@ -84,7 +84,7 @@ namespace ProjectAPI.DataAccess
 													.Select(x => x.Entity);
 			foreach (var modifiedEntry in modifiedEntries)
 			{
-				if (modifiedEntry is Auditable auditableEntity)
+				if (modifiedEntry is IAuditable auditableEntity)
 					auditableEntity.DateUpdated = DateTimeOffset.UtcNow;
 			}
 

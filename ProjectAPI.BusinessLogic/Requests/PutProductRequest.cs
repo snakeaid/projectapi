@@ -3,9 +3,9 @@ using ProjectAPI.Primitives;
 
 namespace ProjectAPI.BusinessLogic.Requests
 {
-    public class PutProductRequest : IRequest<ProductDTO>
+    public class PutProductRequest : IRequest<ProductModel>
     {
         public int Id { get; set; }
-        public ProductDTO ProductDTO { get; set; }
+        public ProductModel ProductModel { get; set; }
     }
 }

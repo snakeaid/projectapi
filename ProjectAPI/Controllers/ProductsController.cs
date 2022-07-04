@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using MediatR;
 using ProjectAPI.Primitives;
-using ProjectAPI.DataAccess.Primitives;
 using ProjectAPI.BusinessLogic.Requests;
 
 namespace ProjectAPI.Controllers
@@ -26,7 +25,7 @@ namespace ProjectAPI.Controllers
 
         //GET api/products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> Get()
+        public async Task<ActionResult<IEnumerable<ProductModel>>> Get()
         {
             var result = await _mediator.Send(new GetAllProductsRequest());
 
@@ -35,7 +34,7 @@ namespace ProjectAPI.Controllers
 
         //GET api/products/id
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDTO>> Get(int id)
+        public async Task<ActionResult<ProductModel>> Get(int id)
         {
             try
             {
@@ -50,7 +49,7 @@ namespace ProjectAPI.Controllers
 
         //DELETE api/products/id
         [HttpDelete("{id}"), Authorize(Roles = "Manager")]
-        public async Task<ActionResult<Product>> Delete(int id)
+        public async Task<ActionResult<ProductModel>> Delete(int id)
         {
             try
             {
@@ -65,21 +64,21 @@ namespace ProjectAPI.Controllers
 
         //POST api/products/
         [HttpPost, Authorize(Roles = "Manager")]
-        public async Task<ActionResult<ProductDTO>> Post([FromBody]ProductDTO productDTO)
+        public async Task<ActionResult<ProductModel>> Post([FromBody]ProductModel ProductModel)
         {
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning($"Given product is invalid");
                 return BadRequest(ModelState);
             }
-            var result = await _mediator.Send(new PostProductRequest { ProductDTO = productDTO });
+            var result = await _mediator.Send(new PostProductRequest { ProductModel = ProductModel });
 
             return Ok(result);
         }
 
         //PUT api/products/id
         [HttpPut("{id}"), Authorize(Roles = "Manager")]
-        public async Task<ActionResult<ProductDTO>> Put(int id, [FromBody] ProductDTO productDTO)
+        public async Task<ActionResult<ProductModel>> Put(int id, [FromBody] ProductModel productModel)
         {
             if (!ModelState.IsValid)
             {
@@ -88,7 +87,7 @@ namespace ProjectAPI.Controllers
             }
             try
             {
-                var result = await _mediator.Send(new PutProductRequest { Id = id, ProductDTO = productDTO });
+                var result = await _mediator.Send(new PutProductRequest { Id = id, ProductModel = productModel });
                 return Ok(result);
             }
             catch(KeyNotFoundException)
