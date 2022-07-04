@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ProjectAPI.DataAccess;
 using ProjectAPI.Mapping;
+using MediatR;
+using System.Reflection;
 
 namespace ProjectAPI
 {
@@ -68,6 +70,8 @@ namespace ProjectAPI
                             ValidateIssuerSigningKey = true,
                         };
                     });
+
+            services.AddMediatR(AppDomain.CurrentDomain.Load("ProjectAPI.BusinessLogic"));
 
             services.AddControllersWithViews();
         }

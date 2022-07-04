@@ -12,7 +12,8 @@ namespace ProjectAPI.Mapping
 			CreateMap<Category, CategoryDTO>();
 
 			CreateMap<ProductDTO, Product>().ForMember(p => p.DateCreated, opts => opts.Ignore())
-											.ForMember(p => p.DateUpdated, opts => opts.Ignore());
+											.ForMember(p => p.DateUpdated, opts => opts.Ignore())
+											.ForMember(p => p.Id, opts => opts.Ignore());
 			//								.ForMember(p => p.Category, opts => opts.Ignore());
 
 			CreateMap<CategoryDTO, Category>().ForMember(c => c.DateCreated, opts => opts.Ignore())

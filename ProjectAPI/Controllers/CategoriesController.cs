@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using ProjectAPI.Primitives;
 using ProjectAPI.DataAccess;
@@ -61,7 +62,7 @@ namespace ProjectAPI.Controllers
         }
 
         //DELETE api/categories/id
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Manager")]
         public async Task<ActionResult<Category>> Delete(int id)
         {
             if (id == 1)
@@ -76,7 +77,7 @@ namespace ProjectAPI.Controllers
                 return NotFound();
             }
 
-            //удаление всех продуктов в категории?
+            //TODO: удаление всех продуктов в категории!!!
 
             category.DateDeleted = DateTimeOffset.UtcNow;
             db.Categories.Attach(category);
@@ -89,7 +90,7 @@ namespace ProjectAPI.Controllers
         }
 
         //POST api/categories/
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Manager")]
         public async Task<ActionResult<CategoryDTO>> Post(CategoryDTO categoryDTO)
         {
             //if (category == null) return BadRequest();
@@ -109,7 +110,7 @@ namespace ProjectAPI.Controllers
         }
 
         //PUT api/categories/id
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize(Roles = "Manager")]
         public async Task<ActionResult<CategoryDTO>> Put(int id, [FromBody] CategoryDTO categoryDTO)
         {
             if (!ModelState.IsValid)

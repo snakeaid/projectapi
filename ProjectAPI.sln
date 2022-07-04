@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAPI.Primitives", "Pr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAPI.Mapping", "ProjectAPI.Mapping\ProjectAPI.Mapping.csproj", "{CEF41C15-CA87-4043-932C-A7289ABCF1B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAPI.BusinessLogic", "ProjectAPI.BusinessLogic\ProjectAPI.BusinessLogic.csproj", "{FE74E604-651F-4995-800B-F0F48A7A77D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{CEF41C15-CA87-4043-932C-A7289ABCF1B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEF41C15-CA87-4043-932C-A7289ABCF1B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEF41C15-CA87-4043-932C-A7289ABCF1B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE74E604-651F-4995-800B-F0F48A7A77D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE74E604-651F-4995-800B-F0F48A7A77D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE74E604-651F-4995-800B-F0F48A7A77D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE74E604-651F-4995-800B-F0F48A7A77D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

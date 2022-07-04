@@ -2,19 +2,30 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Requests\" />
+    <None Remove="Handlers\" />
+    <None Remove="MediatR" />
+    <None Remove="AutoMapper" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
+    <None Remove="NReco.Logging.File" />
     <None Remove="Newtonsoft.Json" />
-    <None Remove="Entities\" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Requests\" />
+    <Folder Include="Handlers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.26" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectAPI.DataAccess.Primitives\ProjectAPI.DataAccess.Primitives.csproj" />
+    <ProjectReference Include="..\ProjectAPI.Primitives\ProjectAPI.Primitives.csproj" />
+    <ProjectReference Include="..\ProjectAPI.DataAccess\ProjectAPI.DataAccess.csproj" />
   </ItemGroup>
 </Project>
