@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using ProjectAPI.Models;
+using ProjectAPI.Primitives;
+using ProjectAPI.DataAccess;
+using ProjectAPI.DataAccess.Primitives;
 
 namespace ProjectAPI.Controllers
 {

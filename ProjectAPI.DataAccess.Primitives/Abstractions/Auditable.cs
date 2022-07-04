@@ -1,5 +1,6 @@
 ﻿using System;
-namespace ProjectAPI.Models
+
+namespace ProjectAPI.DataAccess.Primitives.Abstractions
 {
 	public abstract class Auditable
 	{

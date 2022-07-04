@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ProjectAPI.Models
+namespace ProjectAPI.Primitives
 {
 	public class CategoryDTO
 	{

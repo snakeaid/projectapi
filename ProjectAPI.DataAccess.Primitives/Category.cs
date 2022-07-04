@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ProjectAPI.DataAccess.Primitives.Abstractions;
 
-namespace ProjectAPI.Models
+namespace ProjectAPI.DataAccess.Primitives
 {
 	public class Category : Auditable
 	{
 		public int Id { get; set; }
-		[Required(ErrorMessage="Category name is required")]
+		[Required(ErrorMessage = "Category name is required")]
 		public string Name { get; set; }
 		public string? Description { get; set; }
 
@@ -17,4 +17,3 @@ namespace ProjectAPI.Models
 		public List<string> Specifications { get; set; } = new List<string>();
 	}
 }
-
