@@ -14,6 +14,7 @@ using ProjectAPI.DataAccess;
 using ProjectAPI.Mapping;
 using ProjectAPI.Primitives;
 using ProjectAPI.ModelValidation;
+using ProjectAPI.BusinessLogic.Extensions;
 
 namespace ProjectAPI
 {
@@ -78,6 +79,8 @@ namespace ProjectAPI
             services.AddScoped<IValidator<ProductModel>, ProductModelValidator>();
             services.AddScoped<IValidator<CategoryModel>, CategoryModelValidator>();
 
+            services.AddSwagger(Configuration);
+
             services.AddControllersWithViews();
         }
 
@@ -92,6 +95,8 @@ namespace ProjectAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCustomSwagger(Configuration);
 
             app.UseEndpoints(endpoints =>
             {

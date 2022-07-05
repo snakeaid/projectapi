@@ -14,10 +14,15 @@
     <None Remove="Newtonsoft.Json" />
     <None Remove="FluentValidation" />
     <None Remove="System.Text.Json" />
+    <None Remove="Extensions\" />
+    <None Remove="NSwag.Generation" />
+    <None Remove="Microsoft.AspNetCore.Http.Abstractions" />
+    <None Remove="NSwag.AspNetCore" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Requests\" />
     <Folder Include="Handlers\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
@@ -25,6 +30,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.26" />
     <PackageReference Include="FluentValidation" Version="11.1.0" />
     <PackageReference Include="System.Text.Json" Version="6.0.5" />
+    <PackageReference Include="NSwag.Generation" Version="13.16.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.16.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectAPI.DataAccess.Primitives\ProjectAPI.DataAccess.Primitives.csproj" />
