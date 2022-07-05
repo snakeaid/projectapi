@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -66,31 +67,31 @@ namespace ProjectAPI.Controllers
         [HttpPost, Authorize(Roles = "Manager")]
         public async Task<ActionResult<ProductModel>> Post([FromBody]ProductModel ProductModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                _logger.LogWarning($"Given product is invalid");
-                return BadRequest(ModelState);
+                var result = await _mediator.Send(new PostProductRequest { ProductModel = ProductModel });
+                return Ok(result);
             }
-            var result = await _mediator.Send(new PostProductRequest { ProductModel = ProductModel });
-
-            return Ok(result);
+            catch(ArgumentException ex)
+            {
+                return BadRequest(System.Text.RegularExpressions.Regex.Unescape(ex.Message));
+            }
         }
 
         //PUT api/products/id
         [HttpPut("{id}"), Authorize(Roles = "Manager")]
         public async Task<ActionResult<ProductModel>> Put(int id, [FromBody] ProductModel productModel)
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning($"Given product is invalid");
-                return BadRequest(ModelState);
-            }
             try
             {
                 var result = await _mediator.Send(new PutProductRequest { Id = id, ProductModel = productModel });
                 return Ok(result);
             }
-            catch(KeyNotFoundException)
+            catch (ArgumentException ex)
+            {
+                return BadRequest(System.Text.RegularExpressions.Regex.Unescape(ex.Message));
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }

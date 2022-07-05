@@ -8,10 +8,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using MediatR;
+using FluentValidation;
 using ProjectAPI.DataAccess;
 using ProjectAPI.Mapping;
-using MediatR;
-using System.Reflection;
+using ProjectAPI.Primitives;
+using ProjectAPI.ModelValidation;
 
 namespace ProjectAPI
 {
@@ -72,6 +74,9 @@ namespace ProjectAPI
                     });
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("ProjectAPI.BusinessLogic"));
+
+            services.AddScoped<IValidator<ProductModel>, ProductModelValidator>();
+            services.AddScoped<IValidator<CategoryModel>, CategoryModelValidator>();
 
             services.AddControllersWithViews();
         }

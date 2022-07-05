@@ -72,30 +72,29 @@ namespace ProjectAPI.Controllers
         [HttpPost, Authorize(Roles = "Manager")]
         public async Task<ActionResult<CategoryModel>> Post(CategoryModel categoryModel)
         {
-            //if (category == null) return BadRequest();
-            if (!ModelState.IsValid)
+            try
             {
-                _logger.LogWarning($"Given category is invalid");
-                return BadRequest(ModelState);
+                var result = await _mediator.Send(new PostCategoryRequest { CategoryModel = categoryModel });
+                return Ok(result);
             }
-            var result = await _mediator.Send(new PostCategoryRequest { CategoryModel = categoryModel });
-
-            return Ok(result);
+            catch (ArgumentException ex)
+            {
+                return BadRequest(System.Text.RegularExpressions.Regex.Unescape(ex.Message));
+            }
         }
 
         //PUT api/categories/id
         [HttpPut("{id}"), Authorize(Roles = "Manager")]
         public async Task<ActionResult<CategoryModel>> Put(int id, [FromBody] CategoryModel categoryModel)
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning($"Given category is invalid");
-                return BadRequest(ModelState);
-            }
             try
             {
                 var result = await _mediator.Send(new PutCategoryRequest { Id = id, CategoryModel = categoryModel });
                 return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(System.Text.RegularExpressions.Regex.Unescape(ex.Message));
             }
             catch (KeyNotFoundException)
             {

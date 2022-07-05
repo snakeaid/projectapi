@@ -46,5 +46,8 @@
     <ProjectReference Include="..\ProjectAPI.BusinessLogic\ProjectAPI.BusinessLogic.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\ProjectAPI.ModelValidation\ProjectAPI.ModelValidation.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 </Project>

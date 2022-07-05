@@ -4,4 +4,13 @@
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectAPI.Primitives\ProjectAPI.Primitives.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="FluentValidation" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.1.0" />
+  </ItemGroup>
 </Project>

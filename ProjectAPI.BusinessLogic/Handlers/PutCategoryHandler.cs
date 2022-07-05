@@ -1,9 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Text.Json;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using MediatR;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using ProjectAPI.Primitives;
 using ProjectAPI.DataAccess;
 using ProjectAPI.DataAccess.Primitives;
@@ -18,12 +22,15 @@ namespace ProjectAPI.BusinessLogic.Handlers
         private readonly CatalogContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly IValidator<CategoryModel> _validator;
 
-        public PutCategoryHandler(CatalogContext context, IMapper mapper, ILogger<PutCategoryHandler> logger)
+        public PutCategoryHandler(CatalogContext context, IMapper mapper, ILogger<PutCategoryHandler> logger,
+            IValidator<CategoryModel> validator)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
+            _validator = validator;
         }
 
         public async Task<CategoryModel> Handle(PutCategoryRequest request, CancellationToken cancellationToken)
@@ -34,6 +41,14 @@ namespace ProjectAPI.BusinessLogic.Handlers
                 _logger.LogWarning($"Category {request.Id} NOT FOUND");
                 throw new KeyNotFoundException();
             }
+            ValidationResult result = await _validator.ValidateAsync(categoryModel);
+            if (!result.IsValid)
+            {
+                _logger.LogWarning($"Given category is invalid");
+                string errors = JsonSerializer.Serialize(result.ToDictionary());
+                throw new ArgumentException(errors);
+            }
+
             Category entity = _context.Categories.Include(c => c.Products).FirstOrDefault(c => c.Id == request.Id);
             entity.Name = categoryModel.Name;
             entity.Description = categoryModel.Description;

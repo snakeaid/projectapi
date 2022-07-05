@@ -3,8 +3,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Text.Json;
 using MediatR;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using ProjectAPI.Primitives;
 using ProjectAPI.DataAccess;
 using ProjectAPI.DataAccess.Primitives;
@@ -18,22 +21,29 @@ namespace ProjectAPI.BusinessLogic.Handlers
         private readonly CatalogContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly IValidator<ProductModel> _validator;
 
-        public PostProductHandler(CatalogContext context, IMapper mapper, ILogger<PostProductHandler> logger)
+        public PostProductHandler(CatalogContext context, IMapper mapper, ILogger<PostProductHandler> logger,
+            IValidator<ProductModel> validator)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
+            _validator = validator;
         }
 
         public async Task<ProductModel> Handle(PostProductRequest request, CancellationToken cancellationToken)
         {
             ProductModel productModel = request.ProductModel;
-            //if (!ModelState.IsValid)
-            //{
-            //    //_logger.LogWarning($"Given product is invalid");
-            //    return BadRequest(ModelState);
-            //}
+
+            ValidationResult result = await _validator.ValidateAsync(productModel);
+            if(!result.IsValid)
+            {
+                _logger.LogWarning($"Given product is invalid");
+                string errors = JsonSerializer.Serialize(result.ToDictionary());
+                throw new ArgumentException(errors);
+            }
+
             if (_context.Categories.FirstOrDefault(c => c.Id == productModel.CategoryId) == null)
             {
                 _logger.LogWarning($"Category {productModel.CategoryId} NOT FOUND. Assigning category 1 to the product");
