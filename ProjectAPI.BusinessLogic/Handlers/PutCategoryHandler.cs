@@ -38,13 +38,11 @@ namespace ProjectAPI.BusinessLogic.Handlers
             CategoryModel categoryModel = request.CategoryModel;
             if (!_context.Categories.Any(c => c.Id == request.Id))
             {
-                _logger.LogWarning($"Category {request.Id} NOT FOUND");
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Category {request.Id} NOT FOUND");
             }
             ValidationResult result = await _validator.ValidateAsync(categoryModel);
             if (!result.IsValid)
             {
-                _logger.LogWarning($"Given category is invalid");
                 string errors = JsonSerializer.Serialize(result.ToDictionary());
                 throw new ArgumentException(errors);
             }

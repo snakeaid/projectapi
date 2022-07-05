@@ -37,10 +37,14 @@ namespace ProjectAPI.BusinessLogic.Handlers
         {
             ProductModel productModel = request.ProductModel;
 
+            if (!_context.Products.Any(p => p.Id == request.Id))
+            {
+                throw new KeyNotFoundException($"Product {request.Id} NOT FOUND");
+            }
+
             ValidationResult result = await _validator.ValidateAsync(productModel);
             if (!result.IsValid)
             {
-                _logger.LogWarning($"Given product is invalid");
                 string errors = JsonSerializer.Serialize(result.ToDictionary());
                 throw new ArgumentException(errors);
             }
@@ -49,11 +53,6 @@ namespace ProjectAPI.BusinessLogic.Handlers
             {
                 _logger.LogWarning($"Category {productModel.CategoryId} NOT FOUND. Assigning category 1 to the product");
                 productModel.CategoryId = 1;
-            }
-            if (!_context.Products.Any(p => p.Id == request.Id))
-            {
-                _logger.LogWarning($"Product {request.Id} NOT FOUND");
-                throw new KeyNotFoundException();
             }
 
             Product entity = _context.Products.FirstOrDefault(p => p.Id == request.Id);

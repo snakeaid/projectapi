@@ -38,7 +38,6 @@ namespace ProjectAPI.BusinessLogic.Handlers
             ValidationResult result = await _validator.ValidateAsync(categoryModel);
             if (!result.IsValid)
             {
-                _logger.LogWarning($"Given category is invalid");
                 string errors = JsonSerializer.Serialize(result.ToDictionary());
                 throw new ArgumentException(errors);
             }

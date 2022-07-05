@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using MediatR;
 using ProjectAPI.Primitives;
@@ -14,12 +13,10 @@ namespace ProjectAPI.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly ILogger _logger;
         private readonly IMediator _mediator;
 
-        public ProductsController(ILogger<ProductsController> logger, IMediator mediator)
+        public ProductsController(IMediator mediator)
         {
-            _logger = logger;
             _mediator = mediator;
             //тут было автоматическое добавление категории и продукта если БД пустая
         }
@@ -37,64 +34,32 @@ namespace ProjectAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductModel>> Get(int id)
         {
-            try
-            {
-                var result = await _mediator.Send(new GetProductRequest { Id = id });
-                return Ok(result);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
+            var result = await _mediator.Send(new GetProductRequest { Id = id });
+            return Ok(result);
         }
 
         //DELETE api/products/id
         [HttpDelete("{id}"), Authorize(Roles = "Manager")]
         public async Task<ActionResult<ProductModel>> Delete(int id)
         {
-            try
-            {
-                var result = await _mediator.Send(new DeleteProductRequest { Id = id });
-                return Ok(result);
-            }
-            catch(KeyNotFoundException)
-            {
-                return NotFound();
-            }
+            var result = await _mediator.Send(new DeleteProductRequest { Id = id });
+            return Ok(result);
         }
 
         //POST api/products/
         [HttpPost, Authorize(Roles = "Manager")]
         public async Task<ActionResult<ProductModel>> Post([FromBody]ProductModel ProductModel)
         {
-            try
-            {
-                var result = await _mediator.Send(new PostProductRequest { ProductModel = ProductModel });
-                return Ok(result);
-            }
-            catch(ArgumentException ex)
-            {
-                return BadRequest(System.Text.RegularExpressions.Regex.Unescape(ex.Message));
-            }
+            var result = await _mediator.Send(new PostProductRequest { ProductModel = ProductModel });
+            return Ok(result);
         }
 
         //PUT api/products/id
         [HttpPut("{id}"), Authorize(Roles = "Manager")]
         public async Task<ActionResult<ProductModel>> Put(int id, [FromBody] ProductModel productModel)
         {
-            try
-            {
-                var result = await _mediator.Send(new PutProductRequest { Id = id, ProductModel = productModel });
-                return Ok(result);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(System.Text.RegularExpressions.Regex.Unescape(ex.Message));
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
+            var result = await _mediator.Send(new PutProductRequest { Id = id, ProductModel = productModel });
+            return Ok(result);
         }
     }
 }

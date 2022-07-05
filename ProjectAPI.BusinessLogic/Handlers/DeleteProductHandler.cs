@@ -32,8 +32,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
             Product product = _context.Products.FirstOrDefault(p => p.Id == request.Id);
             if (product == null)
             {
-                _logger.LogWarning($"Product {request.Id} NOT FOUND");
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Product {request.Id} NOT FOUND");
             }
 
             product.DateDeleted = DateTimeOffset.UtcNow;

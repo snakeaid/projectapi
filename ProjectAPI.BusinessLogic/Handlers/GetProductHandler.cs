@@ -31,8 +31,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
             Product product = await _context.Products.FirstOrDefaultAsync(p => p.Id == request.Id);
             if (product == null)
             {
-                _logger.LogWarning($"Product {request.Id} NOT FOUND");
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Product {request.Id} NOT FOUND");
             }
             ProductModel productModel = _mapper.Map<ProductModel>(product);
 

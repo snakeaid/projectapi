@@ -31,8 +31,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
             Category category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == request.Id);
             if (category == null)
             {
-                _logger.LogWarning($"Category {request.Id} NOT FOUND");
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Category {request.Id} NOT FOUND");
             }
             CategoryModel categoryModel = _mapper.Map<CategoryModel>(category);
 

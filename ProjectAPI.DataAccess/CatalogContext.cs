@@ -11,10 +11,25 @@ using ProjectAPI.DataAccess.Primitives.Abstractions;
 
 namespace ProjectAPI.DataAccess
 {
+	/// <summary>
+	/// Database context class which represents the product catalog and implements <see cref="DbContext"/>.
+	/// </summary>
 	public class CatalogContext : DbContext
 	{
+		/// <summary>
+		/// Gets and sets the instance of <see cref="DbSet{Category}"/>, used for database interactions.
+		/// </summary>
 		public DbSet<Category> Categories { get; set; }
+
+		/// <summary>
+		/// Gets and sets the instance of <see cref="DbSet{Product}"/>, used for database interactions.
+		/// </summary>
 		public DbSet<Product> Products { get; set; }
+
+		/// <summary>
+        /// Constructs a new instance of <see cref="CatalogContext"/> class using the specified options.
+        /// </summary>
+        /// <param name="options">An instance of <see cref="DbContextOptions{CatalogContext}"/> class.</param>
 		public CatalogContext(DbContextOptions<CatalogContext> options)
 			: base(options)
 		{
@@ -22,7 +37,10 @@ namespace ProjectAPI.DataAccess
 			Database.EnsureCreated();
 		}
 
-		//реализация (не)вывода soft delete
+		/// <summary>
+		/// Builds the model and its mappings in memory when the context is first created.
+		/// </summary>
+        /// <param name="modelBuilder">An instance of <see cref="ModelBuilder"/> class.</param>
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			foreach (var entityType in modelBuilder.Model.GetEntityTypes())
@@ -30,7 +48,8 @@ namespace ProjectAPI.DataAccess
 				if (typeof(IAuditable).IsAssignableFrom(entityType.ClrType))
 				{
 					var parameter = Expression.Parameter(entityType.ClrType, "p");
-					var deletedCheck = Expression.Lambda(Expression.Equal(Expression.Property(parameter, "DateDeleted"), Expression.Constant(null)), parameter);
+					var deletedCheck = Expression.Lambda(Expression.Equal(Expression.Property(parameter, "DateDeleted"),
+														 Expression.Constant(null)), parameter);
 					modelBuilder.Entity(entityType.ClrType).HasQueryFilter(deletedCheck);
 				}
 			}
@@ -47,6 +66,9 @@ namespace ProjectAPI.DataAccess
 							v => JsonConvert.DeserializeObject<List<string>>(v));
 		}
 
+		/// <summary>
+		/// Saves all changes made in the context of the database. 
+		/// </summary>
 		public override int SaveChanges()
 		{
 			var insertedEntries = this.ChangeTracker.Entries()
@@ -69,6 +91,11 @@ namespace ProjectAPI.DataAccess
 			return base.SaveChanges();
 		}
 
+		/// <summary>
+		/// Asynchronously saves all changes made in the context of the database. 
+		/// </summary>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns></returns>
 		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 		{
 			var insertedEntries = this.ChangeTracker.Entries()

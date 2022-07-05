@@ -32,15 +32,13 @@ namespace ProjectAPI.BusinessLogic.Handlers
             //TODO: продумать категорию Uncategorized - ???
             if (request.Id == 1)
             {
-                _logger.LogWarning($"Category id cannot be 1 when deleting");
                 //TODO: нельзя кидать этот эксепшен!
-                throw new IndexOutOfRangeException();
+                throw new IndexOutOfRangeException("Category id cannot be 1 when deleting");
             }
             Category category = _context.Categories.Include(c => c.Products).FirstOrDefault(c => c.Id == request.Id);
             if (category == null)
             {
-                _logger.LogWarning($"Category {request.Id} NOT FOUND");
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Category {request.Id} NOT FOUND");
             }
 
             //удаление всех продуктов категории

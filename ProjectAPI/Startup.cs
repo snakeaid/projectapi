@@ -97,6 +97,7 @@ namespace ProjectAPI
             app.UseAuthorization();
 
             app.UseCustomSwagger(Configuration);
+            app.UseCustomExceptionMiddleware();
 
             app.UseEndpoints(endpoints =>
             {

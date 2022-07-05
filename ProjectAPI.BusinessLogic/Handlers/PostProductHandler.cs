@@ -39,7 +39,6 @@ namespace ProjectAPI.BusinessLogic.Handlers
             ValidationResult result = await _validator.ValidateAsync(productModel);
             if(!result.IsValid)
             {
-                _logger.LogWarning($"Given product is invalid");
                 string errors = JsonSerializer.Serialize(result.ToDictionary());
                 throw new ArgumentException(errors);
             }
