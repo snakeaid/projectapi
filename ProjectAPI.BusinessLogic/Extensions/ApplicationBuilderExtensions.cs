@@ -12,6 +12,9 @@ namespace ProjectAPI.BusinessLogic.Extensions
         /// <summary>
         /// Adds custom Swagger to the application.
         /// </summary>
+        /// <param name="appBuilder">The application builder.</param>
+        /// <param name="configuration">The application configuration.</param>
+        /// <returns><see cref="IApplicationBuilder"/></returns>
         public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder appBuilder, IConfiguration configuration)
         {
             var swaggerEnabled = configuration.GetValue<bool>("EnvironmentOptions:SwaggerEnabled");
@@ -37,8 +40,10 @@ namespace ProjectAPI.BusinessLogic.Extensions
         }
 
         /// <summary>
-        /// Adds custom exception middleware to the application.
+        /// Adds custom exception handling middleware to the application.
         /// </summary>
+        /// /// <param name="appBuilder">The application builder.</param>
+        /// <returns><see cref="IApplicationBuilder"/></returns>
         public static IApplicationBuilder UseCustomExceptionMiddleware(this IApplicationBuilder appBuilder)
         {
             appBuilder.UseMiddleware<ExceptionHandlerMiddleware>();
@@ -46,6 +51,4 @@ namespace ProjectAPI.BusinessLogic.Extensions
             return appBuilder;
         }
     }
-
 }
-

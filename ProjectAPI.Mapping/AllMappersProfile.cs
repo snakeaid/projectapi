@@ -4,8 +4,14 @@ using ProjectAPI.Primitives;
 
 namespace ProjectAPI.Mapping
 {
+	/// <summary>
+    /// Provides all entity to model and model to entity maps.
+    /// </summary>
 	public class AllMappersProfile : Profile
 	{
+		/// <summary>
+        /// Constructs an instance of <see cref="AllMappersProfile"/> class.
+        /// </summary>
 		public AllMappersProfile()
 		{
 			CreateMap<Product, ProductModel>();

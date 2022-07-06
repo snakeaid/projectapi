@@ -14,20 +14,32 @@ namespace ProjectAPI.Middleware
     /// </summary>
     public class ExceptionHandlerMiddleware
     {
+        /// <summary>
+        /// An instance of <see cref="RequestDelegate"/> which respesents the request.
+        /// </summary>
         private readonly RequestDelegate _next;
+
+        /// <summary>
+        /// An instance of <see cref="ILogger"/>, used for logging.
+        /// </summary>
         private readonly ILogger _logger;
 
         /// <summary>
         /// Constructs a new instance of <see cref="ExceptionHandlerMiddleware"/> using the specified logger and request delegate. 
         /// </summary>
-        /// <param name="next"></param>
-        /// <param name="logger"></param>
+        /// <param name="next">An instance of <see cref="RequestDelegate"/>.</param>
+        /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/> for <see cref="ExceptionHandlerMiddleware"/>.</param>
         public ExceptionHandlerMiddleware(RequestDelegate next, ILogger<ExceptionHandlerMiddleware> logger)
         {
             _next = next;
             _logger = logger;
         }
 
+        /// <summary>
+        /// Tries to invoke the delegate and catches the exception if there is one.
+        /// </summary>
+        /// <param name="context">An instance of <see cref="HttpContext"/> class.</param>
+        /// <returns><see cref="Task"/></returns>
         public async Task InvokeAsync(HttpContext context)
         {
             try
@@ -41,6 +53,12 @@ namespace ProjectAPI.Middleware
             }
         }
 
+        /// <summary>
+        /// Handles the exception catched in <see cref="InvokeAsync(HttpContext)"/>.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="exception"></param>
+        /// <returns><see cref="Task"/></returns>
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
 

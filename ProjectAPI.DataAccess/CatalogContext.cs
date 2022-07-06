@@ -17,24 +17,30 @@ namespace ProjectAPI.DataAccess
 	public class CatalogContext : DbContext
 	{
 		/// <summary>
-		/// Gets and sets the instance of <see cref="DbSet{Category}"/>, used for database interactions.
+		/// Gets and sets the instance of <see cref="DbSet{Category}"/> for <see cref="Category"/>, used for database interactions.
 		/// </summary>
 		public DbSet<Category> Categories { get; set; }
 
 		/// <summary>
-		/// Gets and sets the instance of <see cref="DbSet{Product}"/>, used for database interactions.
+		/// Gets and sets the instance of <see cref="DbSet{Product}"/> for <see cref="Product"/>, used for database interactions.
 		/// </summary>
 		public DbSet<Product> Products { get; set; }
 
 		/// <summary>
         /// Constructs a new instance of <see cref="CatalogContext"/> class using the specified options.
         /// </summary>
-        /// <param name="options">An instance of <see cref="DbContextOptions{CatalogContext}"/> class.</param>
+        /// <param name="options">An instance of <see cref="DbContextOptions{TContext}"/> class for <see cref="CatalogContext"/>.</param>
 		public CatalogContext(DbContextOptions<CatalogContext> options)
 			: base(options)
 		{
-			//			Database.EnsureDeleted();
+						//Database.EnsureDeleted();
 			Database.EnsureCreated();
+
+			//TODO: add initialization of category 1
+			//if(!this.Categories.Any())
+   //         {
+			//	Categories.Add(new Category { Name = "Uncategorized", Description = "Products without a specified category are stored here" });
+   //         }
 		}
 
 		/// <summary>
@@ -95,7 +101,7 @@ namespace ProjectAPI.DataAccess
 		/// Asynchronously saves all changes made in the context of the database. 
 		/// </summary>
         /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns></returns>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="int"/></returns>
 		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 		{
 			var insertedEntries = this.ChangeTracker.Entries()

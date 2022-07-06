@@ -17,13 +17,43 @@ using Microsoft.Extensions.Logging;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
+    /// <summary>
+    /// This class represents a MediatR request handler to update a category and implements
+    /// <see cref="IRequestHandler{TRequest, TResponse}"/> for
+    /// <see cref="PutCategoryRequest"/>, <see cref="CategoryModel"/>.
+    /// </summary>
     public class PutCategoryHandler : IRequestHandler<PutCategoryRequest, CategoryModel>
     {
+        /// <summary>
+        /// An instance of <see cref="CatalogContext"/> which represents the current context.
+        /// </summary>
         private readonly CatalogContext _context;
+
+        /// <summary>
+        /// An instance of <see cref="IMapper"/> which is used for mapping.
+        /// </summary>
         private readonly IMapper _mapper;
+
+        /// <summary>
+        /// An instance of <see cref="ILogger"/> which is used for logging.
+        /// </summary>
         private readonly ILogger _logger;
+
+        /// <summary>
+        /// An instance of <see cref="IValidator{T}"/> for <see cref="CategoryModel"/>
+        /// which is used for model validation.
+        /// </summary>
         private readonly IValidator<CategoryModel> _validator;
 
+        /// <summary>
+        /// Constructs an instance of <see cref="PutCategoryHandler"/> using the specified context, mapper,
+        /// logger and validator.
+        /// </summary>
+        /// <param name="context">An instance of <see cref="CatalogContext"/>.</param>
+        /// <param name="mapper">An instance of <see cref="IMapper"/>.</param>
+        /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
+        /// for <see cref="PostCategoryHandler"/>.</param>
+        /// <param name="validator">An instance of <see cref="IValidator{T}"/> for <see cref="CategoryModel"/>.</param>
         public PutCategoryHandler(CatalogContext context, IMapper mapper, ILogger<PutCategoryHandler> logger,
             IValidator<CategoryModel> validator)
         {
@@ -33,6 +63,14 @@ namespace ProjectAPI.BusinessLogic.Handlers
             _validator = validator;
         }
 
+        /// <summary>
+        /// Handles the specified request to update a category.
+        /// </summary>
+        /// <param name="request">An instance of <see cref="PutCategoryRequest"/>.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="CategoryModel"/></returns>
+        /// <exception cref="ArgumentException">Thrown if the provided model of the category is invalid.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if there is no category found by the specified identifier.</exception>
         public async Task<CategoryModel> Handle(PutCategoryRequest request, CancellationToken cancellationToken)
         {
             CategoryModel categoryModel = request.CategoryModel;

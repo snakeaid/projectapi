@@ -11,12 +11,36 @@ using Microsoft.Extensions.Logging;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
+    /// <summary>
+    /// This class represents a MediatR request handler to get all product and implements
+    /// <see cref="IRequestHandler{TRequest, TResponse}"/> for
+    /// <see cref="GetAllProductsRequest"/>, <see cref="List{T}"/> of <see cref="ProductModel"/>.
+    /// </summary>
     public class GetAllProductsHandler : IRequestHandler<GetAllProductsRequest, List<ProductModel>>
     {
+        /// <summary>
+        /// An instance of <see cref="CatalogContext"/> which represents the current context.
+        /// </summary>
         private readonly CatalogContext _context;
+
+        /// <summary>
+        /// An instance of <see cref="IMapper"/> which is used for mapping.
+        /// </summary>
         private readonly IMapper _mapper;
+
+        /// <summary>
+        /// An instance of <see cref="ILogger"/> which is used for logging.
+        /// </summary>
         private readonly ILogger _logger;
 
+
+        /// <summary>
+        /// Constructs an instance of <see cref="GetAllProductsHandler"/> using the specified context, mapper and logger.
+        /// </summary>
+        /// <param name="context">An instance of <see cref="CatalogContext"/>.</param>
+        /// <param name="mapper">An instance of <see cref="IMapper"/>.</param>
+        /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
+        /// for <see cref="GetAllProductsHandler"/>.</param>
         public GetAllProductsHandler(CatalogContext context, IMapper mapper, ILogger<GetAllProductsHandler> logger)
         {
             _context = context;
@@ -24,6 +48,12 @@ namespace ProjectAPI.BusinessLogic.Handlers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Handles the specified request to get all products.
+        /// </summary>
+        /// <param name="request">An instance of <see cref="GetAllProductsRequest"/>.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="List{T}"/> of <see cref="ProductModel"/></returns>
         public async Task<List<ProductModel>> Handle(GetAllProductsRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Getting all products");

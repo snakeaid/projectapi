@@ -1,25 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ProjectAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Logging;
+using ProjectAPI.Models;
 
 namespace ProjectAPI.Controllers
 {
-	public class AccountController : Controller
+	/// <summary>
+	/// Controller class which controls authentication and derives from <see cref="ControllerBase"/>.
+	/// </summary>
+	public class AccountController : ControllerBase
 	{
-		List<Person> people = new List<Person> { new Person { Login = "manager", Password = "12345", Role = "Manager" } };
+		/// <summary>
+        /// List of all existing users.
+        /// </summary>
+		private List<User> users = new List<User>() { new User { Login = "manager", Password = "12345", Role = "Manager" } };
+
+		/// <summary>
+		/// An instance of <see cref="ILogger"/> which is used for logging.
+		/// </summary>
 		private readonly ILogger _logger;
 
+		/// <summary>
+		/// Constructs an instance of <see cref="AccountController"/> using the specified logger.
+		/// </summary>
+		/// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
+		/// for <see cref="AccountController"/>.</param>
 		public AccountController(ILogger<AccountController> logger)
         {
 			_logger = logger;
         }
 
+		/// <summary>
+		/// Handles the HTTP POST request to get a JWT token for authorization.
+		/// </summary>
+		/// <param name="username">The name of the user.</param>
+		/// <param name="password">The password of the user.</param>
+		/// <returns><see cref="IActionResult"/></returns>
 		[HttpPost("/token")]
 		public IActionResult Token(string username, string password)
         {
@@ -49,18 +70,24 @@ namespace ProjectAPI.Controllers
 
 			_logger.LogInformation($"Generated token for {username} successfully.");
 
-			return Json(response);
+			return Ok(response);
 		}
 
+		/// <summary>
+        /// Verifies the identity and returns its claims.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns><see cref="ClaimsIdentity"/></returns>
 		private ClaimsIdentity GetIdentity(string username, string password)
         {
-			Person person = people.FirstOrDefault(x => x.Login == username && x.Password == password);
-			if(person!=null)
+			User User = users.FirstOrDefault(x => x.Login == username && x.Password == password);
+			if(User!=null)
             {
 				var claims = new List<Claim>
 				{
-					new Claim(ClaimsIdentity.DefaultNameClaimType,person.Login),
-					new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role)
+					new Claim(ClaimsIdentity.DefaultNameClaimType,User.Login),
+					new Claim(ClaimsIdentity.DefaultRoleClaimType, User.Role)
 				};
 				ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 				return claimsIdentity;
@@ -70,4 +97,3 @@ namespace ProjectAPI.Controllers
         }
 	}
 }
-

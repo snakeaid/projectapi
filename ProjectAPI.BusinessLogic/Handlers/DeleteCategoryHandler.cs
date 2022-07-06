@@ -14,12 +14,35 @@ using Microsoft.Extensions.Logging;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
+    /// <summary>
+    /// This class represents a MediatR request handler for category deletion and implements
+    /// <see cref="IRequestHandler{TRequest, TResponse}"/> for
+    /// <see cref="DeleteCategoryRequest"/>, <see cref="CategoryModel"/>.
+    /// </summary>
     public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryRequest, CategoryModel>
     {
+        /// <summary>
+        /// An instance of <see cref="CatalogContext"/> which represents the current context.
+        /// </summary>
         private readonly CatalogContext _context;
+
+        /// <summary>
+        /// An instance of <see cref="IMapper"/> which is used for mapping.
+        /// </summary>
         private readonly IMapper _mapper;
+
+        /// <summary>
+        /// An instance of <see cref="ILogger"/> which is used for logging.
+        /// </summary>
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Constructs an instance of <see cref="DeleteCategoryHandler"/> using the specified context, mapper and logger.
+        /// </summary>
+        /// <param name="context">An instance of <see cref="CatalogContext"/>.</param>
+        /// <param name="mapper">An instance of <see cref="IMapper"/>.</param>
+        /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
+        /// for <see cref="DeleteCategoryHandler"/>.</param>
         public DeleteCategoryHandler(CatalogContext context, IMapper mapper, ILogger<DeleteCategoryHandler> logger)
         {
             _context = context;
@@ -27,12 +50,19 @@ namespace ProjectAPI.BusinessLogic.Handlers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Handles the specified request for category deletion.
+        /// </summary>
+        /// <param name="request">An instance of <see cref="DeleteCategoryRequest"/>.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="CategoryModel"/></returns>
+        /// <exception cref="IndexOutOfRangeException">Thrown if the category identifier is equal 1.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if there is no category found by the specified identifier.</exception>
         public async Task<CategoryModel> Handle(DeleteCategoryRequest request, CancellationToken cancellationToken)
         {
-            //TODO: продумать категорию Uncategorized - ???
             if (request.Id == 1)
             {
-                //TODO: нельзя кидать этот эксепшен!
+                //TODO: this exception is prohibited to throw!!
                 throw new IndexOutOfRangeException("Category id cannot be 1 when deleting");
             }
             Category category = _context.Categories.Include(c => c.Products).FirstOrDefault(c => c.Id == request.Id);
@@ -41,7 +71,6 @@ namespace ProjectAPI.BusinessLogic.Handlers
                 throw new KeyNotFoundException($"Category {request.Id} NOT FOUND");
             }
 
-            //удаление всех продуктов категории
             foreach(Product product in category.Products)
             {
                 product.DateDeleted = DateTimeOffset.UtcNow;

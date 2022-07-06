@@ -18,58 +18,51 @@ using ProjectAPI.BusinessLogic.Extensions;
 
 namespace ProjectAPI
 {
+    /// <summary>
+    /// This class handles the request pipeline and is called right after <see cref="Program"/> is executed.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Gets the application configuration.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
+        /// <summary>
+        /// Constructs an instance of <see cref="Startup"/> using the specified configuration.
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// This method is used to add services to the container.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            string config = Configuration.GetConnectionString("MacConnection");
-            services.AddDbContext<CatalogContext>(options => options.UseSqlServer(config));
+            services.AddCatalogContext(Configuration);
 
-            //отключение автоматической валидации
-            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+            services.DisableAutomaticValidation();
 
-            //логирование - https://github.com/nreco/logging
-            services.AddLogging(loggingBuilder => {
-                loggingBuilder.AddFile("Logs/app_{0:yyyy}-{0:MM}-{0:dd}.log", fileLoggerOpts => {
-                    fileLoggerOpts.FormatLogFileName = fName => {
-                        return String.Format(fName, DateTime.UtcNow);
-                    };
-                });
-            });
-
-            //добавление маппера в/из DTO
+            services.AddLoggingToFile();
+            
             services.AddAutoMapper(typeof(AllMappersProfile));
 
-            //чтобы избежать JsonException: A possible object cycle was detected which is not supported.
-//            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-
-            //добавление аутентификации через jwt
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
                         options.RequireHttpsMetadata = false;
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
-                            // укзывает, будет ли валидироваться издатель при валидации токена
                             ValidateIssuer = true,
-                            // строка, представляющая издателя
                             ValidIssuer = AuthOptions.ISSUER,
-                            // будет ли валидироваться потребитель токена
                             ValidateAudience = true,
-                            // установка потребителя токена
                             ValidAudience = AuthOptions.AUDIENCE,
-                            // будет ли валидироваться время существования
                             ValidateLifetime = true,
-                            // установка ключа безопасности
                             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-                            // валидация ключа безопасности
                             ValidateIssuerSigningKey = true,
                         };
                     });
@@ -84,6 +77,11 @@ namespace ProjectAPI
             services.AddControllersWithViews();
         }
 
+        /// <summary>
+        ///  This method is used to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app">An instance of <see cref="IApplicationBuilder"/>.</param>
+        /// <param name="env">An instance of <see cref="IWebHostEnvironment"/>.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseDeveloperExceptionPage();

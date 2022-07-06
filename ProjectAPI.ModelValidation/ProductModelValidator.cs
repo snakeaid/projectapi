@@ -3,8 +3,14 @@ using FluentValidation;
 
 namespace ProjectAPI.ModelValidation
 {
+    /// <summary>
+    /// Provides product model validation.
+    /// </summary>
     public class ProductModelValidator : AbstractValidator<ProductModel>
     {
+        /// <summary>
+        /// Constructs an instance of <see cref="ProductModelValidator"/> class.
+        /// </summary>
         public ProductModelValidator()
         {
             RuleFor(x => x.Name).Cascade(CascadeMode.Stop)

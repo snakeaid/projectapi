@@ -17,13 +17,43 @@ using Microsoft.Extensions.Logging;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
+    /// <summary>
+    /// This class represents a MediatR request handler to update a product and implements
+    /// <see cref="IRequestHandler{TRequest, TResponse}"/> for
+    /// <see cref="PutProductRequest"/>, <see cref="ProductModel"/>.
+    /// </summary>
     public class PutProductHandler : IRequestHandler<PutProductRequest, ProductModel>
     {
+        /// <summary>
+        /// An instance of <see cref="CatalogContext"/> which represents the current context.
+        /// </summary>
         private readonly CatalogContext _context;
+
+        /// <summary>
+        /// An instance of <see cref="IMapper"/> which is used for mapping.
+        /// </summary>
         private readonly IMapper _mapper;
+
+        /// <summary>
+        /// An instance of <see cref="ILogger"/> which is used for logging.
+        /// </summary>
         private readonly ILogger _logger;
+
+        /// <summary>
+        /// An instance of <see cref="IValidator{T}"/> for <see cref="ProductModel"/>
+        /// which is used for model validation.
+        /// </summary>
         private readonly IValidator<ProductModel> _validator;
 
+        /// <summary>
+        /// Constructs an instance of <see cref="PutProductHandler"/> using the specified context, mapper,
+        /// logger and validator.
+        /// </summary>
+        /// <param name="context">An instance of <see cref="CatalogContext"/>.</param>
+        /// <param name="mapper">An instance of <see cref="IMapper"/>.</param>
+        /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
+        /// for <see cref="PutProductHandler"/>.</param>
+        /// <param name="validator">An instance of <see cref="IValidator{T}"/> for <see cref="ProductModel"/>.</param>
         public PutProductHandler(CatalogContext context, IMapper mapper, ILogger<PutProductHandler> logger,
             IValidator<ProductModel> validator)
         {
@@ -33,6 +63,14 @@ namespace ProjectAPI.BusinessLogic.Handlers
             _validator = validator;
         }
 
+        /// <summary>
+        /// Handles the specified request to update a product.
+        /// </summary>
+        /// <param name="request">An instance of <see cref="PutProductRequest"/>.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="ProductModel"/></returns>
+        /// <exception cref="ArgumentException">Thrown if the provided model of the product is invalid.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if there is no product found by the specified identifier.</exception>
         public async Task<ProductModel> Handle(PutProductRequest request, CancellationToken cancellationToken)
         {
             ProductModel productModel = request.ProductModel;

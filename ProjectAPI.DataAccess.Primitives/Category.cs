@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ProjectAPI.DataAccess.Primitives.Abstractions;
 
-//TODO: good xml comments
 namespace ProjectAPI.DataAccess.Primitives
 {
 	/// <summary>
@@ -43,7 +42,7 @@ namespace ProjectAPI.DataAccess.Primitives
 		public DateTimeOffset? DateUpdated { get; set; }
 
 		/// <summary>
-		/// Gets and sets the date of the ladt update of the category.
+		/// Gets and sets the date of deletion of the category.
 		/// </summary>
 		public DateTimeOffset? DateDeleted { get; set; }
 

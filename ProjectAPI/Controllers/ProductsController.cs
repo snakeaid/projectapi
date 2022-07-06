@@ -9,19 +9,31 @@ using ProjectAPI.BusinessLogic.Requests;
 
 namespace ProjectAPI.Controllers
 {
+    /// <summary>
+    /// API controller class which controls all HTTP requests related to operations with products.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
+        /// <summary>
+        /// An instance of <see cref="IMediator"/> which is used for handling the incoming requests.
+        /// </summary>
         private readonly IMediator _mediator;
 
+        /// <summary>
+        /// Constructs an instance of <see cref="CategoriesController"/> using the specified mediator.
+        /// </summary>
         public ProductsController(IMediator mediator)
         {
             _mediator = mediator;
-            //тут было автоматическое добавление категории и продукта если БД пустая
         }
 
-        //GET api/products
+        /// <summary>
+        /// Handles the HTTP GET request to get all products, invoked at /api/products route.
+        /// </summary>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
+        /// <see cref="IEnumerable{T}"/> of <see cref="ProductModel"/></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductModel>>> Get()
         {
@@ -30,7 +42,12 @@ namespace ProjectAPI.Controllers
             return Ok(result);
         }
 
-        //GET api/products/id
+        /// <summary>
+        /// Handles the HTTP GET request to get the product with the specified identifier, invoked at
+        /// /api/products/id route.
+        /// </summary>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
+        /// <see cref="ProductModel"/></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductModel>> Get(int id)
         {
@@ -38,7 +55,12 @@ namespace ProjectAPI.Controllers
             return Ok(result);
         }
 
-        //DELETE api/products/id
+        /// <summary>
+        /// Handles the HTTP DELETE request to delete the product with the specified identifier, invoked at
+        /// /api/products/id route.
+        /// </summary>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
+        /// <see cref="ProductModel"/></returns>
         [HttpDelete("{id}"), Authorize(Roles = "Manager")]
         public async Task<ActionResult<ProductModel>> Delete(int id)
         {
@@ -46,7 +68,12 @@ namespace ProjectAPI.Controllers
             return Ok(result);
         }
 
-        //POST api/products/
+        /// <summary>
+        /// Handles the HTTP POST request to post a new product, invoked at
+        /// /api/products/ route.
+        /// </summary>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
+        /// <see cref="ProductModel"/></returns>
         [HttpPost, Authorize(Roles = "Manager")]
         public async Task<ActionResult<ProductModel>> Post([FromBody]ProductModel ProductModel)
         {
@@ -54,7 +81,12 @@ namespace ProjectAPI.Controllers
             return Ok(result);
         }
 
-        //PUT api/products/id
+        /// <summary>
+        /// Handles the HTTP PUT request to update the product with the specified identifier, invoked at
+        /// /api/products/id route.
+        /// </summary>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
+        /// <see cref="ProductModel"/></returns>
         [HttpPut("{id}"), Authorize(Roles = "Manager")]
         public async Task<ActionResult<ProductModel>> Put(int id, [FromBody] ProductModel productModel)
         {

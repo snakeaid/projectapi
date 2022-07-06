@@ -19,6 +19,7 @@
     <None Remove="Microsoft.AspNetCore.Http.Abstractions" />
     <None Remove="NSwag.AspNetCore" />
     <None Remove="Microsoft.Extensions.Configuration.Binder" />
+    <None Remove="Microsoft.AspNetCore.Mvc" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Requests\" />
@@ -35,6 +36,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.16.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="NReco.Logging.File" Version="1.1.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectAPI.DataAccess.Primitives\ProjectAPI.DataAccess.Primitives.csproj" />
