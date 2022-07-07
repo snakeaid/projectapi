@@ -35,12 +35,6 @@ namespace ProjectAPI.DataAccess
 		{
 						//Database.EnsureDeleted();
 			Database.EnsureCreated();
-
-			//TODO: add initialization of category 1
-			//if(!this.Categories.Any())
-   //         {
-			//	Categories.Add(new Category { Name = "Uncategorized", Description = "Products without a specified category are stored here" });
-   //         }
 		}
 
 		/// <summary>
@@ -70,6 +64,8 @@ namespace ProjectAPI.DataAccess
 						.HasConversion(
 							v => JsonConvert.SerializeObject(v),
 							v => JsonConvert.DeserializeObject<List<string>>(v));
+
+			modelBuilder.Entity<Category>().HasData(new Category { Id = 1, Name = "Uncategorized", Description = "Products without a specific category are stored here", DateCreated=DateTimeOffset.UtcNow });
 		}
 
 		/// <summary>

@@ -49,7 +49,7 @@ namespace ProjectAPI.Controllers
 			if (identity==null)
             {
 				_logger.LogWarning($"Invalid username or password.");
-				return BadRequest(new { errorText = "Invalid username or password." });
+				return BadRequest(new { errorMessage = "Invalid username or password." });
 			}
 
 			var now = DateTime.UtcNow;
