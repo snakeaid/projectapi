@@ -21,7 +21,7 @@ namespace ProjectAPI.ModelValidation
                                 .NotEmpty()
                                 .Length(4, 1000);
 
-            RuleFor(x => x.CategoryId).GreaterThan(1);
+            RuleFor(x => x.CategoryId).GreaterThan(0);
         }
     }
 }
