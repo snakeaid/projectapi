@@ -5,7 +5,7 @@ using ProjectAPI.Primitives;
 namespace ProjectAPI.Mapping
 {
 	/// <summary>
-    /// Provides all entity to model and model to entity maps.
+    /// Represents entity to model and model to entity mapping profile.
     /// </summary>
 	public class AllMappersProfile : Profile
 	{

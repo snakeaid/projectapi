@@ -62,7 +62,6 @@ namespace ProjectAPI.BusinessLogic.Handlers
         {
             if (request.Id == 1)
             {
-                //TODO: this exception is prohibited to throw!!
                 throw new IndexOutOfRangeException("Category id cannot be 1 when deleting");
             }
             Category category = _context.Categories.Include(c => c.Products).FirstOrDefault(c => c.Id == request.Id);
