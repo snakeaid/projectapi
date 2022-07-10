@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Logging;
 using ProjectAPI.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace ProjectAPI.Controllers
 {
@@ -42,6 +44,8 @@ namespace ProjectAPI.Controllers
 		/// <param name="password">The password of the user.</param>
 		/// <returns><see cref="IActionResult"/></returns>
 		[HttpPost("/token")]
+		[AllowAnonymous]
+		[ProducesResponseType((int)HttpStatusCode.OK)]
 		public IActionResult Token(string username, string password)
         {
 			_logger.LogInformation($"Generating token for {username}");

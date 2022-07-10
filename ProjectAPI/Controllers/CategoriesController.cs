@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using MediatR;
 using ProjectAPI.Primitives;
-using ProjectAPI.DataAccess.Primitives;
 using ProjectAPI.BusinessLogic.Requests;
 
 namespace ProjectAPI.Controllers
@@ -36,11 +36,12 @@ namespace ProjectAPI.Controllers
         /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
         /// <see cref="IEnumerable{T}"/> of <see cref="CategoryModel"/></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryModel>>> Get()
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<CategoryModel>))]
+        public async Task<IActionResult> Get()
         {
             var result = await _mediator.Send(new GetAllCategoriesRequest());
 
-            return result;
+            return Ok(result);
         }
 
         /// <summary>
@@ -50,7 +51,8 @@ namespace ProjectAPI.Controllers
         /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
         /// <see cref="CategoryModel"/></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoryModel>> Get(int id)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CategoryModel))]
+        public async Task<IActionResult> Get(int id)
         {
             var result = await _mediator.Send(new GetCategoryRequest { Id = id });
             return Ok(result);
@@ -63,7 +65,9 @@ namespace ProjectAPI.Controllers
         /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
         /// <see cref="CategoryModel"/></returns>
         [HttpDelete("{id}"), Authorize(Roles = "Manager")]
-        public async Task<ActionResult<Category>> Delete(int id)
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CategoryModel))]
+        public async Task<IActionResult> Delete(int id)
         {
 
             var result = await _mediator.Send(new DeleteCategoryRequest { Id = id });
@@ -77,7 +81,9 @@ namespace ProjectAPI.Controllers
         /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
         /// <see cref="CategoryModel"/></returns>
         [HttpPost, Authorize(Roles = "Manager")]
-        public async Task<ActionResult<CategoryModel>> Post(CreateCategoryModel categoryModel)
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(CategoryModel))]
+        public async Task<IActionResult> Post(CreateCategoryModel categoryModel)
         {
             var result = await _mediator.Send(new PostCategoryRequest { CategoryModel = categoryModel });
             return Ok(result);
@@ -90,7 +96,9 @@ namespace ProjectAPI.Controllers
         /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
         /// <see cref="CategoryModel"/></returns>
         [HttpPut("{id}"), Authorize(Roles = "Manager")]
-        public async Task<ActionResult<CategoryModel>> Put(int id, [FromBody] UpdateCategoryModel categoryModel)
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CategoryModel))]
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateCategoryModel categoryModel)
         {
             var result = await _mediator.Send(new PutCategoryRequest { Id = id, CategoryModel = categoryModel });
             return Ok(result);
