@@ -42,7 +42,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// An instance of <see cref="IValidator{T}"/> for <see cref="ProductModel"/>
         /// which is used for model validation.
         /// </summary>
-        private readonly IValidator<ProductModel> _validator;
+        private readonly IValidator<CreateProductModel> _validator;
 
         /// <summary>
         /// Constructs an instance of <see cref="PostProductHandler"/> using the specified context, mapper,
@@ -54,7 +54,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// for <see cref="PostProductHandler"/>.</param>
         /// <param name="validator">An instance of <see cref="IValidator{T}"/> for <see cref="ProductModel"/>.</param>
         public PostProductHandler(CatalogContext context, IMapper mapper, ILogger<PostProductHandler> logger,
-            IValidator<ProductModel> validator)
+            IValidator<CreateProductModel> validator)
         {
             _context = context;
             _mapper = mapper;
@@ -71,7 +71,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// <exception cref="ArgumentException">Thrown if the provided model of the product is invalid.</exception>
         public async Task<ProductModel> Handle(PostProductRequest request, CancellationToken cancellationToken)
         {
-            ProductModel productModel = request.ProductModel;
+            CreateProductModel productModel = request.ProductModel;
 
             ValidationResult result = await _validator.ValidateAsync(productModel);
             if(!result.IsValid)

@@ -17,15 +17,11 @@ namespace ProjectAPI.Mapping
 			CreateMap<Product, ProductModel>();
 			CreateMap<Category, CategoryModel>();
 
-			CreateMap<ProductModel, Product>().ForMember(p => p.DateCreated, opts => opts.Ignore())
-											.ForMember(p => p.DateUpdated, opts => opts.Ignore())
-											.ForMember(p => p.Id, opts => opts.Ignore());
-			//								.ForMember(p => p.Category, opts => opts.Ignore());
+			CreateMap<CreateProductModel, Product>();
+			CreateMap<CreateCategoryModel, Category>();
 
-			CreateMap<CategoryModel, Category>().ForMember(c => c.DateCreated, opts => opts.Ignore())
-											  .ForMember(c => c.DateUpdated, opts => opts.Ignore())
-											  .ForMember(c => c.Id, opts => opts.Ignore());
-			//								  .ForMember(c => c.Products, opts => opts.Ignore());
+			CreateMap<UpdateProductModel, Product>();
+			CreateMap<UpdateCategoryModel, Category>();
 		}
 	}
 }

@@ -1,18 +1,13 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MediatR;
 using FluentValidation;
-using ProjectAPI.DataAccess;
 using ProjectAPI.Mapping;
-using ProjectAPI.Primitives;
 using ProjectAPI.ModelValidation;
 using ProjectAPI.BusinessLogic.Extensions;
 
@@ -69,8 +64,7 @@ namespace ProjectAPI
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("ProjectAPI.BusinessLogic"));
 
-            services.AddScoped<IValidator<ProductModel>, ProductModelValidator>();
-            services.AddScoped<IValidator<CategoryModel>, CategoryModelValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateProductModelValidator>();
 
             services.AddSwagger(Configuration);
 

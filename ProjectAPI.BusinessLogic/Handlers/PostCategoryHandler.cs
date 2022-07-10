@@ -42,7 +42,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// An instance of <see cref="IValidator{T}"/> for <see cref="CategoryModel"/>
         /// which is used for model validation.
         /// </summary>
-        private readonly IValidator<CategoryModel> _validator;
+        private readonly IValidator<CreateCategoryModel> _validator;
 
         /// <summary>
         /// Constructs an instance of <see cref="PostCategoryHandler"/> using the specified context, mapper,
@@ -54,7 +54,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// for <see cref="PostCategoryHandler"/>.</param>
         /// <param name="validator">An instance of <see cref="IValidator{T}"/> for <see cref="CategoryModel"/>.</param>
         public PostCategoryHandler(CatalogContext context, IMapper mapper, ILogger<PostCategoryHandler> logger,
-            IValidator<CategoryModel> validator)
+            IValidator<CreateCategoryModel> validator)
         {
             _context = context;
             _mapper = mapper;
@@ -71,7 +71,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// <exception cref="ArgumentException">Thrown if the provided model of the category is invalid.</exception>
         public async Task<CategoryModel> Handle(PostCategoryRequest request, CancellationToken cancellationToken)
         {
-            CategoryModel categoryModel = request.CategoryModel;
+            CreateCategoryModel categoryModel = request.CategoryModel;
             ValidationResult result = await _validator.ValidateAsync(categoryModel);
             if (!result.IsValid)
             {

@@ -10,8 +10,8 @@ namespace ProjectAPI.BusinessLogic.Requests
     public class PostCategoryRequest : IRequest<CategoryModel>
     {
         /// <summary>
-        /// Gets and sets the <see cref="Primitives.CategoryModel"/> model instance for the category which is to be posted.
+        /// Gets and sets the <see cref="CreateCategoryModel"/> model instance for the category which is to be posted.
         /// </summary>
-        public CategoryModel CategoryModel { get; set; }
+        public CreateCategoryModel CategoryModel { get; set; }
     }
 }

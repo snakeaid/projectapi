@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace ProjectAPI.Primitives
 {
 	/// <summary>
-	/// Model class for the Product entity which is used for user interaction.
+	/// Model class for the Product entity which is used to display the product information.
 	/// </summary>
 	public class ProductModel
 	{
@@ -15,18 +15,17 @@ namespace ProjectAPI.Primitives
 		public int Id { get; set; }
 
 		/// <summary>
-		/// Gets and sets the displayed or received product name.
+		/// Gets and sets the displayed product name.
 		/// </summary>
-		[Required(ErrorMessage = "Product name is required")]
 		public string Name { get; set; }
 
 		/// <summary>
-		/// Gets and sets the displayed or received product description.
+		/// Gets and sets the displayed product description.
 		/// </summary>
 		public string? Description { get; set; }
 
 		/// <summary>
-		/// Gets and sets the displayed or received category id of the product.
+		/// Gets and sets the displayed category id of the product.
 		/// </summary>
 		public int CategoryId { get; set; }
 
@@ -41,7 +40,7 @@ namespace ProjectAPI.Primitives
 		public DateTimeOffset? DateUpdated { get; set; }
 
 		/// <summary>
-		/// Gets and sets the displayed or received list of product specifications.
+		/// Gets and sets the displayed list of product specifications.
 		/// </summary>
 		public Dictionary<string, string> SpecificationData { get; set; } = new Dictionary<string, string>();
 	}

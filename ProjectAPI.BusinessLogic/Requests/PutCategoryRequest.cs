@@ -15,8 +15,8 @@ namespace ProjectAPI.BusinessLogic.Requests
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets and sets the <see cref="Primitives.CategoryModel"/> model instance for the category which is to be updated.
+        /// Gets and sets the <see cref="UpdateCategoryModel"/> model instance for the category which is to be updated.
         /// </summary>
-        public CategoryModel CategoryModel { get; set; }
+        public UpdateCategoryModel CategoryModel { get; set; }
     }
 }

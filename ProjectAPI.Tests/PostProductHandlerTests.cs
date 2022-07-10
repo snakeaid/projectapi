@@ -26,7 +26,7 @@ namespace ProjectAPI.Tests
 		private readonly CatalogContext mockContext;
 		private readonly ILogger<PostProductHandler> mockLogger;
 		private readonly Mapper mockMapper;
-		private readonly IValidator<ProductModel> mockValidator;
+		private readonly IValidator<CreateProductModel> mockValidator;
 
 		private PostProductRequest request;
 		private PostProductHandler handler;
@@ -47,7 +47,7 @@ namespace ProjectAPI.Tests
 			var configuration = new MapperConfiguration(cfg => cfg.AddProfile(allMappersProfile));
 			mockMapper = new Mapper(configuration);
 
-			mockValidator = new ProductModelValidator();
+			mockValidator = new CreateProductModelValidator();
 
 			handler = new PostProductHandler(mockContext, mockMapper, mockLogger, mockValidator);
 		}
@@ -62,7 +62,7 @@ namespace ProjectAPI.Tests
 		public async Task PostProductHandler_AddsProduct_IfValidModelPassed()
 		{
 			//Arange
-			request = new PostProductRequest { ProductModel = new ProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
+			request = new PostProductRequest { ProductModel = new CreateProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
 
 			//Act
 			int countBefore = mockContext.Products.Count();
@@ -79,7 +79,7 @@ namespace ProjectAPI.Tests
 		public async Task PostProductHandler_ReturnsProduct_IfValidModelPassed()
 		{
 			//Arange
-			request = new PostProductRequest { ProductModel = new ProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
+			request = new PostProductRequest { ProductModel = new CreateProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
 
 			//Act
 			var result = await handler.Handle(request, default);
@@ -95,7 +95,7 @@ namespace ProjectAPI.Tests
 		public async Task PostProductHandler_AssignsDefaultCategory_IfValidModelPassedButCategoryIdIsInvalid()
 		{
 			//Arange
-			request = new PostProductRequest { ProductModel = new ProductModel { Name = "string", Description = "string", CategoryId = 5, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
+			request = new PostProductRequest { ProductModel = new CreateProductModel { Name = "string", Description = "string", CategoryId = 5, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
 
 			//Act
 			var result = await handler.Handle(request, default);
@@ -110,7 +110,7 @@ namespace ProjectAPI.Tests
 			//Arange
 			mockContext.Categories.Add(new Category { Id = 2, Name = "Category 2", Description = "Description 2", Specifications = new List<string> { "Spec 2", "Spec 3" } });
 			mockContext.SaveChanges();
-			request = new PostProductRequest { ProductModel = new ProductModel { Name = "string", Description = "string", CategoryId = 2, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
+			request = new PostProductRequest { ProductModel = new CreateProductModel { Name = "string", Description = "string", CategoryId = 2, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
 
 			//Act
 			var result = await handler.Handle(request, default);
@@ -126,7 +126,7 @@ namespace ProjectAPI.Tests
 		public async Task PostProductHandler_ThrowsAgrumentException_IfInvalidModelPassed(string name, string description, int categoryId)
 		{
 			//Arange
-			request = new PostProductRequest { ProductModel = new ProductModel { Name = name, Description = description, CategoryId = categoryId } };
+			request = new PostProductRequest { ProductModel = new CreateProductModel { Name = name, Description = description, CategoryId = categoryId } };
 
 			//Act
 

@@ -75,7 +75,7 @@ namespace ProjectAPI.Controllers
         /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
         /// <see cref="ProductModel"/></returns>
         [HttpPost, Authorize(Roles = "Manager")]
-        public async Task<ActionResult<ProductModel>> Post([FromBody]ProductModel ProductModel)
+        public async Task<ActionResult<ProductModel>> Post(CreateProductModel ProductModel)
         {
             var result = await _mediator.Send(new PostProductRequest { ProductModel = ProductModel });
             return Ok(result);
@@ -88,7 +88,7 @@ namespace ProjectAPI.Controllers
         /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
         /// <see cref="ProductModel"/></returns>
         [HttpPut("{id}"), Authorize(Roles = "Manager")]
-        public async Task<ActionResult<ProductModel>> Put(int id, [FromBody] ProductModel productModel)
+        public async Task<ActionResult<ProductModel>> Put(int id, [FromBody] UpdateProductModel productModel)
         {
             var result = await _mediator.Send(new PutProductRequest { Id = id, ProductModel = productModel });
             return Ok(result);

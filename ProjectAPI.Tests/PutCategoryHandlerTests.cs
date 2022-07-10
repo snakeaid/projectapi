@@ -26,7 +26,7 @@ namespace ProjectAPI.Tests
 		private readonly CatalogContext mockContext;
 		private readonly ILogger<PutCategoryHandler> mockLogger;
 		private readonly Mapper mockMapper;
-		private readonly IValidator<CategoryModel> mockValidator;
+		private readonly IValidator<UpdateCategoryModel> mockValidator;
 
 		private PutCategoryRequest request;
 		private PutCategoryHandler handler;
@@ -47,7 +47,7 @@ namespace ProjectAPI.Tests
 			var configuration = new MapperConfiguration(cfg => cfg.AddProfile(allMappersProfile));
 			mockMapper = new Mapper(configuration);
 
-			mockValidator = new CategoryModelValidator();
+			mockValidator = new UpdateCategoryModelValidator();
 
 			handler = new PutCategoryHandler(mockContext, mockMapper, mockLogger, mockValidator);
 		}
@@ -62,7 +62,7 @@ namespace ProjectAPI.Tests
         public async Task PutCategoryHandler_UpdatesCategory_IfValidModelAndIdPassed()
         {
             //Arange
-            request = new PutCategoryRequest { Id=2, CategoryModel = new CategoryModel { Name = "string", Description = "string", Specifications = new List<string> { "Spec 1", "Spec 3", "Spec 5" } } };
+            request = new PutCategoryRequest { Id=2, CategoryModel = new UpdateCategoryModel { Name = "string", Description = "string", Specifications = new List<string> { "Spec 1", "Spec 3", "Spec 5" } } };
 
             //Act
             await handler.Handle(request, default);
@@ -78,7 +78,7 @@ namespace ProjectAPI.Tests
 		public async Task PutCategoryHandler_UpdatesAllProductSpecifications_IfValidModelAndIdPassed()
 		{
 			//Arange
-			request = new PutCategoryRequest { Id = 2, CategoryModel = new CategoryModel { Name = "string", Description = "string", Specifications = new List<string> { "Spec 1", "Spec 3", "Spec 5" } } };
+			request = new PutCategoryRequest { Id = 2, CategoryModel = new UpdateCategoryModel { Name = "string", Description = "string", Specifications = new List<string> { "Spec 1", "Spec 3", "Spec 5" } } };
 
 			//Act
 			await handler.Handle(request, default);
@@ -92,7 +92,7 @@ namespace ProjectAPI.Tests
         public async Task PutCategoryHandler_ReturnsCategory_IfValidModelAndIdPassed()
         {
             //Arange
-            request = new PutCategoryRequest { Id = 2, CategoryModel = new CategoryModel { Name = "string", Description = "string" } };
+            request = new PutCategoryRequest { Id = 2, CategoryModel = new UpdateCategoryModel { Name = "string", Description = "string" } };
 
             //Act
             var result = await handler.Handle(request, default);
@@ -108,7 +108,7 @@ namespace ProjectAPI.Tests
 		public async Task GetCategoryHandler_ThrowsKeyNotFoundException_IfPassedIdDoesntExist()
 		{
 			//Arange
-			request = new PutCategoryRequest { Id = 5, CategoryModel = new CategoryModel { Name = "string", Description = "string" } };
+			request = new PutCategoryRequest { Id = 5, CategoryModel = new UpdateCategoryModel { Name = "string", Description = "string" } };
 
 			//Act
 
@@ -124,7 +124,7 @@ namespace ProjectAPI.Tests
 		public async Task PutCategoryHandler_ThrowsAgrumentException_IfInvalidModelPassedButPassedIdExists(string name, string description)
         {
             //Arange
-            request = new PutCategoryRequest { Id=2, CategoryModel = new CategoryModel { Name = name, Description = description } };
+            request = new PutCategoryRequest { Id=2, CategoryModel = new UpdateCategoryModel { Name = name, Description = description } };
 
 			//Act
 

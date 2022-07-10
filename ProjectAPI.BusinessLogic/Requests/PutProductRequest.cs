@@ -15,8 +15,8 @@ namespace ProjectAPI.BusinessLogic.Requests
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets and sets the <see cref="Primitives.ProductModel"/> model instance for the product which is to be updated.
+        /// Gets and sets the <see cref="UpdateProductModel"/> model instance for the product which is to be updated.
         /// </summary>
-        public ProductModel ProductModel { get; set; }
+        public UpdateProductModel ProductModel { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// An instance of <see cref="IValidator{T}"/> for <see cref="ProductModel"/>
         /// which is used for model validation.
         /// </summary>
-        private readonly IValidator<ProductModel> _validator;
+        private readonly IValidator<UpdateProductModel> _validator;
 
         /// <summary>
         /// Constructs an instance of <see cref="PutProductHandler"/> using the specified context, mapper,
@@ -55,7 +55,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// for <see cref="PutProductHandler"/>.</param>
         /// <param name="validator">An instance of <see cref="IValidator{T}"/> for <see cref="ProductModel"/>.</param>
         public PutProductHandler(CatalogContext context, IMapper mapper, ILogger<PutProductHandler> logger,
-            IValidator<ProductModel> validator)
+            IValidator<UpdateProductModel> validator)
         {
             _context = context;
             _mapper = mapper;
@@ -73,7 +73,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// <exception cref="KeyNotFoundException">Thrown if there is no product found by the specified identifier.</exception>
         public async Task<ProductModel> Handle(PutProductRequest request, CancellationToken cancellationToken)
         {
-            ProductModel productModel = request.ProductModel;
+            UpdateProductModel productModel = request.ProductModel;
 
             if (!_context.Products.Any(p => p.Id == request.Id))
             {

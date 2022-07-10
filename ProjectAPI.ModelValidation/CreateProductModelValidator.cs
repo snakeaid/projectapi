@@ -4,23 +4,24 @@ using FluentValidation;
 namespace ProjectAPI.ModelValidation
 {
     /// <summary>
-    /// Provides category model validation.
+    /// Provides model validation when creating a new product.
     /// </summary>
-    public class CategoryModelValidator : AbstractValidator<CategoryModel>
+    public class CreateProductModelValidator : AbstractValidator<CreateProductModel>
     {
         /// <summary>
-        /// Constructs an instance of <see cref="CategoryModelValidator"/> class.
+        /// Constructs an instance of <see cref="ProductModelValidator"/> class.
         /// </summary>
-        public CategoryModelValidator()
+        public CreateProductModelValidator()
         {
             RuleFor(x => x.Name).Cascade(CascadeMode.Stop)
                                 .NotEmpty()
-                                .Length(2,50);
+                                .Length(2, 50);
 
             RuleFor(x => x.Description).Cascade(CascadeMode.Stop)
                                 .NotEmpty()
                                 .Length(4, 1000);
+
+            RuleFor(x => x.CategoryId).GreaterThan(0);
         }
     }
 }
-

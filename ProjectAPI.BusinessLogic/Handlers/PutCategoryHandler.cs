@@ -43,7 +43,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// An instance of <see cref="IValidator{T}"/> for <see cref="CategoryModel"/>
         /// which is used for model validation.
         /// </summary>
-        private readonly IValidator<CategoryModel> _validator;
+        private readonly IValidator<UpdateCategoryModel> _validator;
 
         /// <summary>
         /// Constructs an instance of <see cref="PutCategoryHandler"/> using the specified context, mapper,
@@ -55,7 +55,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// for <see cref="PostCategoryHandler"/>.</param>
         /// <param name="validator">An instance of <see cref="IValidator{T}"/> for <see cref="CategoryModel"/>.</param>
         public PutCategoryHandler(CatalogContext context, IMapper mapper, ILogger<PutCategoryHandler> logger,
-            IValidator<CategoryModel> validator)
+            IValidator<UpdateCategoryModel> validator)
         {
             _context = context;
             _mapper = mapper;
@@ -73,7 +73,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// <exception cref="KeyNotFoundException">Thrown if there is no category found by the specified identifier.</exception>
         public async Task<CategoryModel> Handle(PutCategoryRequest request, CancellationToken cancellationToken)
         {
-            CategoryModel categoryModel = request.CategoryModel;
+            UpdateCategoryModel categoryModel = request.CategoryModel;
             if (!_context.Categories.Any(c => c.Id == request.Id))
             {
                 throw new KeyNotFoundException($"Category {request.Id} NOT FOUND");

@@ -10,8 +10,8 @@ namespace ProjectAPI.BusinessLogic.Requests
     public class PostProductRequest : IRequest<ProductModel>
     {
         /// <summary>
-        /// Gets and sets the <see cref="Primitives.ProductModel"/> model instance for the product which is to be posted.
+        /// Gets and sets the <see cref="CreateProductModel"/> model instance for the product which is to be posted.
         /// </summary>
-        public ProductModel ProductModel { get; set; }
+        public CreateProductModel ProductModel { get; set; }
     }
 }

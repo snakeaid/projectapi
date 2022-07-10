@@ -26,7 +26,7 @@ namespace ProjectAPI.Tests
 		private readonly CatalogContext mockContext;
 		private readonly ILogger<PostCategoryHandler> mockLogger;
 		private readonly Mapper mockMapper;
-		private readonly IValidator<CategoryModel> mockValidator;
+		private readonly IValidator<CreateCategoryModel> mockValidator;
 
 		private PostCategoryRequest request;
 		private PostCategoryHandler handler;
@@ -47,7 +47,7 @@ namespace ProjectAPI.Tests
 			var configuration = new MapperConfiguration(cfg => cfg.AddProfile(allMappersProfile));
 			mockMapper = new Mapper(configuration);
 
-			mockValidator = new CategoryModelValidator();
+			mockValidator = new CreateCategoryModelValidator();
 
 			handler = new PostCategoryHandler(mockContext, mockMapper, mockLogger, mockValidator);
 		}
@@ -62,7 +62,7 @@ namespace ProjectAPI.Tests
 		public async Task PostCategoryHandler_AddsCategory_IfValidModelPassed()
 		{
 			//Arange
-			request = new PostCategoryRequest { CategoryModel = new CategoryModel { Name = "string", Description = "string", Specifications = new List<string> { "Spec 1", "Spec 3", "Spec 5" } } };
+			request = new PostCategoryRequest { CategoryModel = new CreateCategoryModel { Name = "string", Description = "string", Specifications = new List<string> { "Spec 1", "Spec 3", "Spec 5" } } };
 
 			//Act
 			int countBefore = mockContext.Categories.Count();
@@ -80,7 +80,7 @@ namespace ProjectAPI.Tests
 		public async Task PostCategoryHandler_ReturnsCategory_IfValidModelPassed()
 		{
 			//Arange
-			request = new PostCategoryRequest { CategoryModel = new CategoryModel { Name = "string", Description = "string", Specifications = new List<string> { "Spec 1", "Spec 3", "Spec 5" } } };
+			request = new PostCategoryRequest { CategoryModel = new CreateCategoryModel { Name = "string", Description = "string", Specifications = new List<string> { "Spec 1", "Spec 3", "Spec 5" } } };
 
 			//Act
 			var result = await handler.Handle(request, default);
@@ -99,7 +99,7 @@ namespace ProjectAPI.Tests
 		public async Task PostCategoryHandler_ThrowsAgrumentException_IfInvalidModelPassed(string name, string description)
 		{
 			//Arange
-			request = new PostCategoryRequest { CategoryModel = new CategoryModel { Name = name, Description = description } };
+			request = new PostCategoryRequest { CategoryModel = new CreateCategoryModel { Name = name, Description = description } };
 
 			//Act
 

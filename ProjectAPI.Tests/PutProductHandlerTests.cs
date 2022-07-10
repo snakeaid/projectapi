@@ -26,7 +26,7 @@ namespace ProjectAPI.Tests
 		private readonly CatalogContext mockContext;
 		private readonly ILogger<PutProductHandler> mockLogger;
 		private readonly Mapper mockMapper;
-		private readonly IValidator<ProductModel> mockValidator;
+		private readonly IValidator<UpdateProductModel> mockValidator;
 
 		private PutProductRequest request;
 		private PutProductHandler handler;
@@ -47,7 +47,7 @@ namespace ProjectAPI.Tests
 			var configuration = new MapperConfiguration(cfg => cfg.AddProfile(allMappersProfile));
 			mockMapper = new Mapper(configuration);
 
-			mockValidator = new ProductModelValidator();
+			mockValidator = new UpdateProductModelValidator();
 
 			handler = new PutProductHandler(mockContext, mockMapper, mockLogger, mockValidator);
 		}
@@ -62,7 +62,7 @@ namespace ProjectAPI.Tests
 		public async Task PutProductHandler_UpdatesProduct_IfValidModelAndIdPassed()
 		{
 			//Arange
-			request = new PutProductRequest { Id = 2, ProductModel = new ProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
+			request = new PutProductRequest { Id = 2, ProductModel = new UpdateProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
 
 			//Act
 			await handler.Handle(request, default);
@@ -77,7 +77,7 @@ namespace ProjectAPI.Tests
 		public async Task PutProductHandler_ReturnsProduct_IfValidModelAndIdPassed()
 		{
 			//Arange
-			request = new PutProductRequest { Id = 2, ProductModel = new ProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
+			request = new PutProductRequest { Id = 2, ProductModel = new UpdateProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
 
 			//Act
 			var result = await handler.Handle(request, default);
@@ -93,7 +93,7 @@ namespace ProjectAPI.Tests
 		public async Task PutProductHandler_AssignsDefaultProduct_IfValidModelPassedButCategoryIdIsInvalid()
 		{
 			//Arange
-			request = new PutProductRequest { Id = 2, ProductModel = new ProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
+			request = new PutProductRequest { Id = 2, ProductModel = new UpdateProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
 
 			//Act
 			var result = await handler.Handle(request, default);
@@ -107,7 +107,7 @@ namespace ProjectAPI.Tests
 		{
 			//Arange
 			mockContext.Categories.Add(new Category { Id = 2, Name = "Category 2", Description = "Description 2", Specifications = new List<string> { "Spec 2", "Spec 3" } });
-			request = new PutProductRequest { Id = 3, ProductModel = new ProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
+			request = new PutProductRequest { Id = 3, ProductModel = new UpdateProductModel { Name = "string", Description = "string", CategoryId = 1, SpecificationData = new Dictionary<string, string> { { "Spec 1", "Value 1" }, { "Spec 2", "Value 2" } } } };
 
 			//Act
 			var result = await handler.Handle(request, default);
@@ -120,7 +120,7 @@ namespace ProjectAPI.Tests
 		public async Task GetProductHandler_ThrowsKeyNotFoundException_IfPassedIdDoesntExist()
 		{
 			//Arange
-			request = new PutProductRequest { Id = 5, ProductModel = new ProductModel { Name = "string", Description = "string" } };
+			request = new PutProductRequest { Id = 5, ProductModel = new UpdateProductModel { Name = "string", Description = "string" } };
 
 			//Act
 
@@ -136,7 +136,7 @@ namespace ProjectAPI.Tests
 		public async Task PutProductHandler_ThrowsAgrumentException_IfInvalidModelPassed(string name, string description, int categoryId)
 		{
 			//Arange
-			request = new PutProductRequest { Id = 2, ProductModel = new ProductModel { Name = name, Description = description, CategoryId = categoryId } };
+			request = new PutProductRequest { Id = 2, ProductModel = new UpdateProductModel { Name = name, Description = description, CategoryId = categoryId } };
 
 			//Act
 
