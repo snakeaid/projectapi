@@ -54,7 +54,7 @@ namespace ProjectAPI.BusinessLogic.Extensions
         /// <returns><see cref="IServiceCollection"/></returns>
         public static IServiceCollection AddCatalogContext(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<CatalogContext>(options => options.UseSqlServer(configuration.GetConnectionString("MacConnection")));
+            services.AddDbContext<CatalogContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             return services;
         }
