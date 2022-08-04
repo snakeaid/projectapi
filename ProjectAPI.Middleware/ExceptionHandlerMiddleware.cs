@@ -15,7 +15,7 @@ namespace ProjectAPI.Middleware
     public class ExceptionHandlerMiddleware
     {
         /// <summary>
-        /// An instance of <see cref="RequestDelegate"/> which respesents the request.
+        /// An instance of <see cref="RequestDelegate"/> which represents the request.
         /// </summary>
         private readonly RequestDelegate _next;
 
@@ -52,7 +52,7 @@ namespace ProjectAPI.Middleware
                 await HandleExceptionAsync(context, ex);
             }
         }
-
+        
         /// <summary>
         /// Handles the exception catched in <see cref="InvokeAsync(HttpContext)"/>.
         /// </summary>
@@ -61,11 +61,10 @@ namespace ProjectAPI.Middleware
         /// <returns><see cref="Task"/></returns>
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-
             var response = context.Response;
             response.ContentType = "application/json";
 
-            var message = JsonSerializer.Serialize(new { errorMessage = exception?.Message });
+            var message = JsonSerializer.Serialize(new { errorMessage = exception?.Message }); //todo can't parse json
 
             switch (exception)
             {
@@ -75,7 +74,8 @@ namespace ProjectAPI.Middleware
                 case IndexOutOfRangeException ex:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
-                case ArgumentException ex:
+                case InvalidOperationException ioe:
+                case ArgumentException ae:
                     message = Regex.Unescape(exception?.Message);
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;

@@ -66,6 +66,7 @@ namespace ProjectAPI.Controllers
         /// <see cref="ProductModel"/></returns>
         [HttpDelete("{id}"), Authorize(Roles = "Manager")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ProductModel))]
         public async Task<IActionResult> Delete(int id)
         {
@@ -81,6 +82,7 @@ namespace ProjectAPI.Controllers
         /// <see cref="ProductModel"/></returns>
         [HttpPost, Authorize(Roles = "Manager")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(ProductModel))]
         public async Task<IActionResult> Post([FromBody] CreateProductModel ProductModel)
         {
@@ -96,6 +98,7 @@ namespace ProjectAPI.Controllers
         /// <see cref="ProductModel"/></returns>
         [HttpPut("{id}"), Authorize(Roles = "Manager")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ProductModel))]
         public async Task<IActionResult> Put(int id, [FromBody] UpdateProductModel productModel)
         {

@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using Xunit;
-using Moq;
+using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using ProjectAPI.BusinessLogic.Requests;
+using Microsoft.Extensions.Logging;
+using Moq;
 using ProjectAPI.BusinessLogic.Handlers;
-using ProjectAPI.Mapping;
+using ProjectAPI.BusinessLogic.Requests;
 using ProjectAPI.DataAccess;
 using ProjectAPI.DataAccess.Primitives;
-using ProjectAPI.Primitives;
+using ProjectAPI.Mapping;
 using ProjectAPI.ModelValidation;
+using ProjectAPI.Primitives;
+using Xunit;
 
 namespace ProjectAPI.Tests
 {

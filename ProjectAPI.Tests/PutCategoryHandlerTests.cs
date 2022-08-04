@@ -10,7 +10,6 @@ using AutoMapper;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using ProjectAPI.BusinessLogic.Requests;
 using ProjectAPI.BusinessLogic.Handlers;
 using ProjectAPI.Mapping;

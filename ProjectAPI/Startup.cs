@@ -1,15 +1,18 @@
 ﻿using System;
+using System.IO;
+using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
-using MediatR;
-using FluentValidation;
+using ProjectAPI.BusinessLogic.Extensions;
 using ProjectAPI.Mapping;
 using ProjectAPI.ModelValidation;
-using ProjectAPI.BusinessLogic.Extensions;
 
 namespace ProjectAPI
 {
@@ -82,6 +85,11 @@ namespace ProjectAPI
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Uploads")),
+                RequestPath = new PathString("/Uploads")
+            });
 
             app.UseRouting();
 

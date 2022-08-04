@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProjectAPI\ProjectAPI.csproj" />
     <ProjectReference Include="..\ProjectAPI.BusinessLogic\ProjectAPI.BusinessLogic.csproj" />
     <ProjectReference Include="..\ProjectAPI.Mapping\ProjectAPI.Mapping.csproj" />
+    <ProjectReference Include="..\ProjectAPI.ModelValidation\ProjectAPI.ModelValidation.csproj" />
     <ProjectReference Include="..\ProjectAPI.Primitives\ProjectAPI.Primitives.csproj" />
     <ProjectReference Include="..\ProjectAPI.DataAccess.Primitives\ProjectAPI.DataAccess.Primitives.csproj" />
   </ItemGroup>

@@ -66,6 +66,7 @@ namespace ProjectAPI.Controllers
         /// <see cref="CategoryModel"/></returns>
         [HttpDelete("{id}"), Authorize(Roles = "Manager")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CategoryModel))]
         public async Task<IActionResult> Delete(int id)
         {
@@ -82,6 +83,7 @@ namespace ProjectAPI.Controllers
         /// <see cref="CategoryModel"/></returns>
         [HttpPost, Authorize(Roles = "Manager")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(CategoryModel))]
         public async Task<IActionResult> Post(CreateCategoryModel categoryModel)
         {
@@ -97,6 +99,7 @@ namespace ProjectAPI.Controllers
         /// <see cref="CategoryModel"/></returns>
         [HttpPut("{id}"), Authorize(Roles = "Manager")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CategoryModel))]
         public async Task<IActionResult> Put(int id, [FromBody] UpdateCategoryModel categoryModel)
         {
