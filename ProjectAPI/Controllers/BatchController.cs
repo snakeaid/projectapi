@@ -1,13 +1,21 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Threading.Tasks;
+using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ProjectAPI.BusinessLogic;
+using ProjectAPI.BusinessLogic.Requests;
+using ProjectAPI.Primitives;
 
 namespace ProjectAPI.Controllers
 {
@@ -23,51 +31,36 @@ namespace ProjectAPI.Controllers
         /// </summary>
         private readonly ILogger _logger;
 
+        private readonly IMediator _mediator;
+
         /// <summary>
         /// Constructs an instance of <see cref="BatchController"/> using the specified logger.
         /// </summary>
         /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
         /// for <see cref="BatchController"/>.</param>
-        public BatchController(ILogger<BatchController> logger)
+        /// <param name="sendEndpoint">An instance of <see cref="ISendEndpoint"/>.</param>
+        public BatchController(ILogger<BatchController> logger, IMediator mediator)
         {
             _logger = logger;
+            _mediator = mediator;
         }
 
         /// <summary>
         /// Handles the HTTP POST request to upload a csv/json file.
         /// </summary>
         /// <returns><see cref="IActionResult"/></returns>
-        [HttpPost("upload"), Authorize(Roles = "Manager")]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        // [HttpPost("categories"), Authorize(Roles = "Manager")]
+        // [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [HttpPost("categories"), AllowAnonymous]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
-        public async Task<IActionResult> Upload(IFormFile file)
+        public async Task<IActionResult> UploadCategories(IFormFile file)
         {
-            //var formCollection = await Request.ReadFormAsync();
-            //var file = formCollection.Files.First();
-            var folderName = Path.Combine("Uploads");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            if (file.Length > 0)
-            {
-                var fullFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                var fileType = fullFileName.Split('.').Last();
-                if (fileType != "csv" || fileType != "json")
-                {
-                    return BadRequest(new { errorMessage = "File type must be either json or csv." });
-                }
-                var batchId = Guid.NewGuid();
-                var fileName = batchId + "." + fileType;
-                var fullPath = Path.Combine(pathToSave, fileName);
-                //var dbPath = Path.Combine(folderName, fileName);
-                await using (var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-                return Ok(batchId);
-            }
-        
-            return BadRequest();
+            var result = await _mediator.Send(new BatchUploadCategoriesRequest() { File = file });
+            return Ok(result);
         }
+
+        
         
         /// <summary>
         /// Handles the HTTP GET request to check the batch processing status.
@@ -77,10 +70,8 @@ namespace ProjectAPI.Controllers
         [AllowAnonymous]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
-        public async Task<IActionResult> Upload(int batchId)
+        public async Task<IActionResult> Status(int batchId)
         {
-            //var formCollection = await Request.ReadFormAsync();
-            //var file = formCollection.Files.First();
             
             return Ok();
         }

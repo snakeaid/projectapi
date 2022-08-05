@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using FluentValidation;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -9,7 +10,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using ProjectAPI.BatchUploadService;
 using ProjectAPI.BusinessLogic.Extensions;
 using ProjectAPI.Mapping;
 using ProjectAPI.ModelValidation;
@@ -70,6 +73,11 @@ namespace ProjectAPI
             services.AddValidatorsFromAssemblyContaining<CreateProductModelValidator>();
 
             services.AddSwagger(Configuration);
+            
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq();
+            });
 
             services.AddControllersWithViews();
         }
@@ -85,11 +93,6 @@ namespace ProjectAPI
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Uploads")),
-                RequestPath = new PathString("/Uploads")
-            });
 
             app.UseRouting();
 
@@ -98,7 +101,7 @@ namespace ProjectAPI
 
             app.UseCustomSwagger(Configuration);
             app.UseCustomExceptionMiddleware();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();

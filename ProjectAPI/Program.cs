@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using ProjectAPI.BatchUploadService;
 
 namespace ProjectAPI
 {
@@ -29,13 +30,6 @@ namespace ProjectAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                })
-                .ConfigureServices(services =>
-                {
-                    services.AddMassTransit(x =>
-                    {
-                        x.UsingRabbitMq();
-                    });
                 });
     }
 }

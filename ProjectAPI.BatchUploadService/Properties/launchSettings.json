@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "BatchUploadService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
