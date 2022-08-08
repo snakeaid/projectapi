@@ -9,20 +9,20 @@ namespace ProjectAPI.DataAccess.Primitives
     public class UploadRequest
     {
         /// <summary>
-        /// Gets and sets the unique identifier of the product.
+        /// Gets and sets the unique identifier of the request.
         /// </summary>
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Gets and sets the type of model in the uploaded file.
+        /// Gets and sets the type of models in the uploaded file.
         /// </summary>
         public CatalogEntityType Type { get; set; }
-        
+
         /// <summary>
         /// Gets and sets file contents encoded to a base64 string.
         /// </summary>
         public string File { get; set; }
-        
+
         /// <summary>
         /// Gets and sets the file type.
         /// </summary>

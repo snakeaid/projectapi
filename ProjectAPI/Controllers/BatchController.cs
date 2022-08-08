@@ -38,12 +38,13 @@ namespace ProjectAPI.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
         public async Task<IActionResult> UploadCategories(IFormFile file)
         {
-            var result = await _mediator.Send(new BatchUploadRequest { File = file, Type = CatalogEntityType.Category});
+            var result = await _mediator.Send(new BatchUploadRequest
+                { File = file, Type = CatalogEntityType.Category });
             return Ok(result);
         }
-        
+
         /// <summary>
-        /// Handles the HTTP POST request to upload a csv/json file with categories.
+        /// Handles the HTTP POST request to upload a csv/json file with products.
         /// </summary>
         /// <returns><see cref="IActionResult"/></returns>
         // [HttpPost("categories"), Authorize(Roles = "Manager")]
@@ -53,7 +54,7 @@ namespace ProjectAPI.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
         public async Task<IActionResult> UploadProducts(IFormFile file)
         {
-            var result = await _mediator.Send(new BatchUploadRequest { File = file, Type = CatalogEntityType.Product});
+            var result = await _mediator.Send(new BatchUploadRequest { File = file, Type = CatalogEntityType.Product });
             return Ok(result);
         }
 
@@ -67,8 +68,7 @@ namespace ProjectAPI.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
         public async Task<IActionResult> Status(Guid batchId)
         {
-            var result = await _mediator.Send(new GetUploadStatusRequest { Id = batchId } );
-            
+            var result = await _mediator.Send(new GetUploadStatusRequest { Id = batchId });
             return Ok(result);
         }
     }

@@ -13,7 +13,7 @@ namespace ProjectAPI.BusinessLogic.Extensions
     public static class UploadRequestExtensions
     {
         /// <summary>
-        /// 
+        /// Parses the file form the given upload request into a generic list.
         /// </summary>
         /// <param name="request">An instance of <see cref="UploadRequest"/>.</param>
         /// <typeparam name="T">Type of objects in the list.</typeparam>

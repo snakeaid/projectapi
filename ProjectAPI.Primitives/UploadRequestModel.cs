@@ -11,12 +11,12 @@ namespace ProjectAPI.Primitives
         /// Gets and sets the displayed unique identifier of the product.
         /// </summary>
         public Guid Id { get; set; }
-        
+
         /// <summary>
-        /// Gets and sets the displayed type of model in the uploaded file.
+        /// Gets and sets the displayed type of models in the uploaded file.
         /// </summary>
         public string Type { get; set; }
-        
+
         /// <summary>
         /// Gets and sets the displayed status of the upload request.
         /// </summary>

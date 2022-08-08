@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
@@ -13,15 +9,14 @@ using ProjectAPI.BusinessLogic.Extensions;
 using ProjectAPI.DataAccess;
 using ProjectAPI.DataAccess.Primitives;
 using ProjectAPI.Primitives;
-using ServiceStack;
 
 namespace ProjectAPI.BatchUploadService
 {
     public class BatchCategoryUploadConsumer : IConsumer<UploadRequest>
     {
         private readonly CatalogContext _context;
-        private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
         private readonly IValidator<CreateCategoryModel> _validator;
 
         /// <summary>
@@ -33,7 +28,7 @@ namespace ProjectAPI.BatchUploadService
         /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
         /// for <see cref="BatchCategoryUploadConsumer"/>.</param>
         /// <param name="validator">An instance of <see cref="IValidator{T}"/> for <see cref="CategoryModel"/>.</param>
-        public BatchCategoryUploadConsumer(CatalogContext context, IMapper mapper, 
+        public BatchCategoryUploadConsumer(CatalogContext context, IMapper mapper,
             ILogger<BatchCategoryUploadConsumer> logger, IValidator<CreateCategoryModel> validator)
         {
             _context = context;
@@ -60,24 +55,27 @@ namespace ProjectAPI.BatchUploadService
                 {
                     // string errors = JsonSerializer.Serialize(result.ToDictionary());
                     // throw new ArgumentException(errors); //TODO errors
-                    _logger.Log(LogLevel.Information, $"Category {i+1} is invalid, moving to the next one.");
+                    _logger.Log(LogLevel.Information, $"Category {i + 1} is invalid, moving to the next one.");
                     continue;
                 }
 
                 var category = _mapper.Map<Category>(categoryModel);
                 await _context.Categories.AddAsync(category);
                 successCount++;
-                _logger.Log(LogLevel.Information, $"Added category {i+1} successfully.");
+                _logger.Log(LogLevel.Information, $"Added category {i + 1} successfully.");
                 request.Status = $"Adding the categories...\n{successCount}/{categories.Count} added.";
+                await _context.SaveChangesAsync();
             }
 
             await _context.SaveChangesAsync();
-            
-            var sb = new StringBuilder($"Upload completed: {successCount}/{categories.Count} categories were added successfully.");
-            if (successCount < categories.Count) sb.Append(" The rest of the categories were invalid.");
+
+            var sb = new StringBuilder(
+                $"Upload completed: {successCount}/{categories.Count} categories were added successfully.");
+            if (successCount < categories.Count)
+                sb.Append(" The rest {products.Count - successCount} categories were invalid.");
             request.Status = sb.ToString();
             await _context.SaveChangesAsync();
-            
+
             sb.Insert(7, $"{request.Id} ");
             _logger.Log(LogLevel.Information, sb.ToString());
         }

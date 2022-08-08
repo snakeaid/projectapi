@@ -18,7 +18,7 @@ namespace ProjectAPI.BatchUploadService
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .AddUserSecrets(Assembly.GetExecutingAssembly())
             .Build();
-        
+
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -29,29 +29,29 @@ namespace ProjectAPI.BatchUploadService
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddCatalogContext(Configuration);
-                    
+
                     services.AddLoggingToFile();
-            
+
                     services.AddAutoMapper(typeof(AllMappersProfile));
-                    
+
                     services.AddValidatorsFromAssemblyContaining<CreateProductModelValidator>();
-                    
+
                     services.AddMassTransit(x =>
                     {
                         x.AddConsumer<BatchCategoryUploadConsumer>()
                             .Endpoint(e => e.Name = "categories-upload-queue");
+                        x.AddConsumer<BatchProductUploadConsumer>()
+                            .Endpoint(e => e.Name = "products-upload-queue");
 
-                        x.UsingRabbitMq((context,cfg) =>
+                        x.UsingRabbitMq((context, cfg) =>
                         {
-                            cfg.Host("localhost", "/", h => {
+                            cfg.Host("localhost", "/", h =>
+                            {
                                 h.Username("guest");
                                 h.Password("guest");
                             });
 
                             cfg.ConfigureEndpoints(context);
-
-                            // cfg.ReceiveEndpoint("categories-upload-queue", 
-                            //     q => q.Consumer<BatchCategoryUploadConsumer>());
                         });
                     });
                 });

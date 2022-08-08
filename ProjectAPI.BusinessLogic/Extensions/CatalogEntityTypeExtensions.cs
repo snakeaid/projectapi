@@ -6,7 +6,7 @@ namespace ProjectAPI.BusinessLogic.Extensions
     /// <summary>
     /// Provides extensions for <see cref="CatalogEntityType"/>.
     /// </summary>
-    public static class CatalogEntityTypeExtensions //TODO move to business logic
+    public static class CatalogEntityTypeExtensions
     {
         /// <summary>
         /// Extension method which provides user-friendly type names for <see cref="CatalogEntityType"/>
