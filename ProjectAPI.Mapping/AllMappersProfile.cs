@@ -15,13 +15,16 @@ namespace ProjectAPI.Mapping
 		public AllMappersProfile()
 		{
 			CreateMap<Product, ProductModel>();
-			CreateMap<Category, CategoryModel>();
-
 			CreateMap<CreateProductModel, Product>();
-			CreateMap<CreateCategoryModel, Category>();
-
 			CreateMap<UpdateProductModel, Product>();
+			
+			CreateMap<Category, CategoryModel>();
+			CreateMap<CreateCategoryModel, Category>();
 			CreateMap<UpdateCategoryModel, Category>();
+			
+			CreateMap<UploadRequest, UploadRequestModel>()
+					.ForMember(dest => dest.Type, 
+						opt => opt.MapFrom(src => src.Type.ToFriendlyString()));
 		}
 	}
 }

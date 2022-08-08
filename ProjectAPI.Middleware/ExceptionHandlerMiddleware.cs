@@ -54,7 +54,7 @@ namespace ProjectAPI.Middleware
         }
         
         /// <summary>
-        /// Handles the exception catched in <see cref="InvokeAsync(HttpContext)"/>.
+        /// Handles the exception caught in <see cref="InvokeAsync(HttpContext)"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="exception"></param>

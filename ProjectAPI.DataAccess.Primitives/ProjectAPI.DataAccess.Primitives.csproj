@@ -13,5 +13,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectAPI.Abstractions\ProjectAPI.DataAccess.Primitives.Abstractions.csproj" />
+    <ProjectReference Include="..\ProjectAPI.Primitives\ProjectAPI.Primitives.csproj" />
   </ItemGroup>
 </Project>

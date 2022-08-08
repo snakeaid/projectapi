@@ -1,11 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Threading.Tasks;
 using MassTransit;
 using MediatR;
@@ -13,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ProjectAPI.BusinessLogic;
 using ProjectAPI.BusinessLogic.Requests;
 using ProjectAPI.Primitives;
 
@@ -38,7 +31,6 @@ namespace ProjectAPI.Controllers
         /// </summary>
         /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
         /// for <see cref="BatchController"/>.</param>
-        /// <param name="sendEndpoint">An instance of <see cref="ISendEndpoint"/>.</param>
         public BatchController(ILogger<BatchController> logger, IMediator mediator)
         {
             _logger = logger;
@@ -46,7 +38,7 @@ namespace ProjectAPI.Controllers
         }
 
         /// <summary>
-        /// Handles the HTTP POST request to upload a csv/json file.
+        /// Handles the HTTP POST request to upload a csv/json file with categories.
         /// </summary>
         /// <returns><see cref="IActionResult"/></returns>
         // [HttpPost("categories"), Authorize(Roles = "Manager")]
@@ -56,12 +48,10 @@ namespace ProjectAPI.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
         public async Task<IActionResult> UploadCategories(IFormFile file)
         {
-            var result = await _mediator.Send(new BatchUploadCategoriesRequest() { File = file });
+            var result = await _mediator.Send(new BatchUploadRequest { File = file, Type = CatalogEntityType.Category});
             return Ok(result);
         }
 
-        
-        
         /// <summary>
         /// Handles the HTTP GET request to check the batch processing status.
         /// </summary>
@@ -70,10 +60,12 @@ namespace ProjectAPI.Controllers
         [AllowAnonymous]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
-        public async Task<IActionResult> Status(int batchId)
+        public async Task<IActionResult> Status(Guid batchId)
         {
+            //TODO add status check
+            var result = await _mediator.Send(new GetUploadStatusRequest { Id = batchId } );
             
-            return Ok();
+            return Ok(result);
         }
     }
 }

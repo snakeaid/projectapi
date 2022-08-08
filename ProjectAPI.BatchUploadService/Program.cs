@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MassTransit;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace ProjectAPI.BatchUploadService
@@ -32,27 +27,10 @@ namespace ProjectAPI.BatchUploadService
 
                             cfg.ConfigureEndpoints(context);
                             
-                            cfg.ReceiveEndpoint("category-upload-queue", 
-                                q => q.Consumer<BatchCategoriesUploadConsumer>());
+                            cfg.ReceiveEndpoint("batch-upload-queue", 
+                                q => q.Consumer<BatchUploadConsumer>());
                         });
                     });
-
-                    services.AddHostedService<Worker>();
                 });
     }
 }
-
-// services.AddMassTransit(x =>
-// {
-//     x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
-//     {
-//         config.Host(new Uri("rabbitmq://localhost"), h =>
-//         {
-//             h.Username("guest");
-//             h.Password("guest");
-//         });
-//         
-//         config.ReceiveEndpoint("category-upload-queue", q => 
-//             q.Consumer<BatchCategoriesUploadConsumer>());
-//     }));
-// });
