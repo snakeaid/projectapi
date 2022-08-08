@@ -22,6 +22,11 @@ namespace ProjectAPI.DataAccess.Primitives
         /// Gets and sets file contents encoded to a base64 string.
         /// </summary>
         public string File { get; set; }
+        
+        /// <summary>
+        /// Gets and sets the file type.
+        /// </summary>
+        public string FileType { get; set; }
 
         /// <summary>
         /// Gets and sets the status of the upload request.

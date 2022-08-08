@@ -1,10 +1,24 @@
+using System.IO;
+using System.Reflection;
+using FluentValidation;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProjectAPI.BusinessLogic.Extensions;
+using ProjectAPI.Mapping;
+using ProjectAPI.ModelValidation;
 
 namespace ProjectAPI.BatchUploadService
 {
     public class Program
     {
+        public static IConfiguration Configuration => new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddUserSecrets(Assembly.GetExecutingAssembly())
+            .Build();
+        
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -14,9 +28,18 @@ namespace ProjectAPI.BatchUploadService
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddCatalogContext(Configuration);
+                    
+                    services.AddLoggingToFile();
+            
+                    services.AddAutoMapper(typeof(AllMappersProfile));
+                    
+                    services.AddValidatorsFromAssemblyContaining<CreateProductModelValidator>();
+                    
                     services.AddMassTransit(x =>
                     {
-                        // elided...
+                        x.AddConsumer<BatchCategoryUploadConsumer>()
+                            .Endpoint(e => e.Name = "categories-upload-queue");
 
                         x.UsingRabbitMq((context,cfg) =>
                         {
@@ -26,9 +49,9 @@ namespace ProjectAPI.BatchUploadService
                             });
 
                             cfg.ConfigureEndpoints(context);
-                            
-                            cfg.ReceiveEndpoint("batch-upload-queue", 
-                                q => q.Consumer<BatchUploadConsumer>());
+
+                            // cfg.ReceiveEndpoint("categories-upload-queue", 
+                            //     q => q.Consumer<BatchCategoryUploadConsumer>());
                         });
                     });
                 });

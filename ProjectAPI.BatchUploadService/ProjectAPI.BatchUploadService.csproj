@@ -6,13 +6,18 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.1.0" />
         <PackageReference Include="MassTransit" Version="8.0.5" />
         <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.5" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.25" />
+        <PackageReference Include="ServiceStack.Text" Version="6.2.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\ProjectAPI.BusinessLogic\ProjectAPI.BusinessLogic.csproj" />
+      <ProjectReference Include="..\ProjectAPI.Mapping\ProjectAPI.Mapping.csproj" />
+      <ProjectReference Include="..\ProjectAPI.ModelValidation\ProjectAPI.ModelValidation.csproj" />
     </ItemGroup>
 </Project>

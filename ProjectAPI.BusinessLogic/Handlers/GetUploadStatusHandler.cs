@@ -18,19 +18,8 @@ namespace ProjectAPI.BusinessLogic.Handlers
     /// </summary>
 	public class GetUploadStatusHandler : IRequestHandler<GetUploadStatusRequest, UploadRequestModel>
     {
-        /// <summary>
-        /// An instance of <see cref="CatalogContext"/> which represents the current context.
-        /// </summary>
         private readonly CatalogContext _context;
-
-        /// <summary>
-        /// An instance of <see cref="IMapper"/> which is used for mapping.
-        /// </summary>
         private readonly IMapper _mapper;
-
-        /// <summary>
-        /// An instance of <see cref="ILogger"/> which is used for logging.
-        /// </summary>
         private readonly ILogger _logger;
 
         /// <summary>

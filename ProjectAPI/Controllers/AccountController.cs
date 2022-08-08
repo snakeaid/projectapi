@@ -23,10 +23,7 @@ namespace ProjectAPI.Controllers
         /// List of all existing users.
         /// </summary>
 		private List<User> users = new List<User>() { new User { Login = "manager", Password = "12345", Role = "Manager" } };
-
-		/// <summary>
-		/// An instance of <see cref="ILogger"/> which is used for logging.
-		/// </summary>
+		
 		private readonly ILogger _logger;
 
 		/// <summary>

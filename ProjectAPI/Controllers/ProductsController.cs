@@ -17,9 +17,6 @@ namespace ProjectAPI.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        /// <summary>
-        /// An instance of <see cref="IMediator"/> which is used for handling the incoming requests.
-        /// </summary>
         private readonly IMediator _mediator;
 
         /// <summary>

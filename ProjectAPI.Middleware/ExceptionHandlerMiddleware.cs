@@ -64,7 +64,7 @@ namespace ProjectAPI.Middleware
             var response = context.Response;
             response.ContentType = "application/json";
 
-            var message = JsonSerializer.Serialize(new { errorMessage = exception?.Message }); //todo can't parse json
+            var message = JsonSerializer.Serialize(new { errorMessage = exception?.Message });
 
             switch (exception)
             {

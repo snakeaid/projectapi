@@ -23,25 +23,9 @@ namespace ProjectAPI.BusinessLogic.Handlers
     /// </summary>
     public class PostProductHandler : IRequestHandler<PostProductRequest, ProductModel>
     {
-        /// <summary>
-        /// An instance of <see cref="CatalogContext"/> which represents the current context.
-        /// </summary>
         private readonly CatalogContext _context;
-
-        /// <summary>
-        /// An instance of <see cref="IMapper"/> which is used for mapping.
-        /// </summary>
         private readonly IMapper _mapper;
-
-        /// <summary>
-        /// An instance of <see cref="ILogger"/> which is used for logging.
-        /// </summary>
         private readonly ILogger _logger;
-
-        /// <summary>
-        /// An instance of <see cref="IValidator{T}"/> for <see cref="ProductModel"/>
-        /// which is used for model validation.
-        /// </summary>
         private readonly IValidator<CreateProductModel> _validator;
 
         /// <summary>

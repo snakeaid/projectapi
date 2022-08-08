@@ -9,7 +9,7 @@ namespace ProjectAPI.ModelValidation
     public class UpdateProductModelValidator : AbstractValidator<UpdateProductModel>
     {
         /// <summary>
-        /// Constructs an instance of <see cref="ProductModelValidator"/> class.
+        /// Constructs an instance of <see cref="UpdateProductModelValidator"/> class.
         /// </summary>
         public UpdateProductModelValidator()
         {
