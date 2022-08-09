@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace ProjectAPI.Middleware
 {
@@ -15,14 +16,14 @@ namespace ProjectAPI.Middleware
     public class ExceptionHandlerMiddleware
     {
         /// <summary>
-        /// An instance of <see cref="RequestDelegate"/> which represents the request.
-        /// </summary>
-        private readonly RequestDelegate _next;
-
-        /// <summary>
         /// An instance of <see cref="ILogger"/>, used for logging.
         /// </summary>
         private readonly ILogger _logger;
+
+        /// <summary>
+        /// An instance of <see cref="RequestDelegate"/> which represents the request.
+        /// </summary>
+        private readonly RequestDelegate _next;
 
         /// <summary>
         /// Constructs a new instance of <see cref="ExceptionHandlerMiddleware"/> using the specified logger and request delegate. 
@@ -48,11 +49,10 @@ namespace ProjectAPI.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(Regex.Unescape(ex.Message));
                 await HandleExceptionAsync(context, ex);
             }
         }
-        
+
         /// <summary>
         /// Handles the exception caught in <see cref="InvokeAsync(HttpContext)"/>.
         /// </summary>
@@ -64,19 +64,30 @@ namespace ProjectAPI.Middleware
             var response = context.Response;
             response.ContentType = "application/json";
 
-            var message = JsonSerializer.Serialize(new { errorMessage = exception?.Message });
-
-            switch (exception)
+            string exceptionType = exception.GetType().ToString().Split('.').LastOrDefault();
+            string exceptionMessage = exception.Message;
+            if (exception is RequestFaultException faultException)
             {
-                case KeyNotFoundException ex:
+                exceptionType = faultException.Fault.Exceptions.FirstOrDefault().ExceptionType.Split('.')
+                    .LastOrDefault();
+                exceptionMessage = faultException.Fault.Exceptions.FirstOrDefault().Message;
+            }
+
+            _logger.LogWarning(Regex.Unescape(exceptionMessage));
+
+            var message = JsonSerializer.Serialize(new { errorMessage = exceptionMessage });
+
+            switch (exceptionType)
+            {
+                case "KeyNotFoundException":
                     response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;
-                case IndexOutOfRangeException ex:
+                case "IndexOutOfRangeException":
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
-                case InvalidOperationException ioe:
-                case ArgumentException ae:
-                    message = Regex.Unescape(exception?.Message);
+                case "InvalidOperationException":
+                case "ArgumentException":
+                    message = Regex.Unescape(exceptionMessage);
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
                 default:

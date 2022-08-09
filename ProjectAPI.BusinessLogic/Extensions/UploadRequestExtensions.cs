@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json;
 using ProjectAPI.DataAccess.Primitives;
 using ServiceStack;
+using ServiceStack.Text;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ProjectAPI.BusinessLogic.Extensions
 {
@@ -26,6 +27,7 @@ namespace ProjectAPI.BusinessLogic.Extensions
             switch (request.FileType)
             {
                 case "csv":
+                    CsvConfig.ItemSeperatorString = ";"; //optional
                     list = fileContents.FromCsv<List<T>>();
                     break;
                 case "json":

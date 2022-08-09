@@ -1,42 +1,30 @@
-﻿using System;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using MassTransit;
 using MediatR;
-using AutoMapper;
-using ProjectAPI.DataAccess;
-using ProjectAPI.DataAccess.Primitives;
-using ProjectAPI.Primitives;
 using ProjectAPI.BusinessLogic.Requests;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using ProjectAPI.Primitives;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
     /// <summary>
     /// This class represents a MediatR request handler for product deletion and implements
-    /// <see cref="IRequestHandler{TRequest, TResponse}"/> for
+    /// <see cref="IRequestHandler{TRequest,TResponse}"/> for
     /// <see cref="Delete"/>, <see cref="ProductModel"/>.
     /// </summary>
     public class DeleteProductHandler : IRequestHandler<DeleteProductRequest, ProductModel>
     {
-        private readonly CatalogContext _context;
-        private readonly IMapper _mapper;
-        private readonly ILogger _logger;
+        private readonly IRequestClient<DeleteProductModel> _client;
 
         /// <summary>
-        /// Constructs an instance of <see cref="DeleteProductHandler"/> using the specified context, mapper and logger.
+        /// Constructs an instance of <see cref="DeleteProductHandler"/> using the request client.
         /// </summary>
-        /// <param name="context">An instance of <see cref="CatalogContext"/>.</param>
-        /// <param name="mapper">An instance of <see cref="IMapper"/>.</param>
-        /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
-        /// for <see cref="DeleteProductHandler"/>.</param>
-        public DeleteProductHandler(CatalogContext context, IMapper mapper, ILogger<DeleteProductHandler> logger)
+        /// <param name="client">An instance of <see cref="IRequestClient{TRequest}"/>
+        /// for <see cref="DeleteProductModel"/>.</param>
+        public DeleteProductHandler(IRequestClient<DeleteProductModel> client)
         {
-            _context = context;
-            _mapper = mapper;
-            _logger = logger;
+            _client = client;
         }
 
         /// <summary>
@@ -44,24 +32,13 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// </summary>
         /// <param name="request">An instance of <see cref="DeleteProductRequest"/>.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns><see cref="Task{TResult}"/> for <see cref="CategoryModel"/></returns>
+        /// <returns><see cref="Task{TResult}"/> for <see cref="ProductModel"/></returns>
         /// <exception cref="KeyNotFoundException">Thrown if there is no category found by the specified identifier.</exception>
         public async Task<ProductModel> Handle(DeleteProductRequest request, CancellationToken cancellationToken)
         {
-            Product product = _context.Products.FirstOrDefault(p => p.Id == request.Id);
-            if (product == null)
-            {
-                throw new KeyNotFoundException($"Product {request.Id} NOT FOUND");
-            }
-
-            product.DateDeleted = DateTimeOffset.UtcNow;
-            _context.Products.Attach(product);
-            _context.Entry(product).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation($"Deleted product {request.Id} successfully");
-            return _mapper.Map<ProductModel>(product);
+            var productModel = new DeleteProductModel { Id = request.Id };
+            var response = await _client.GetResponse<ProductModel>(productModel);
+            return response.Message;
         }
     }
 }

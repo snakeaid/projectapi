@@ -1,4 +1,6 @@
 using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
@@ -10,7 +12,7 @@ using ProjectAPI.DataAccess;
 using ProjectAPI.DataAccess.Primitives;
 using ProjectAPI.Primitives;
 
-namespace ProjectAPI.BatchUploadService
+namespace ProjectAPI.UploadService
 {
     public class BatchCategoryUploadConsumer : IConsumer<UploadRequest>
     {
@@ -27,7 +29,7 @@ namespace ProjectAPI.BatchUploadService
         /// <param name="mapper">An instance of <see cref="IMapper"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
         /// for <see cref="BatchCategoryUploadConsumer"/>.</param>
-        /// <param name="validator">An instance of <see cref="IValidator{T}"/> for <see cref="CategoryModel"/>.</param>
+        /// <param name="validator">An instance of <see cref="IValidator{T}"/> for <see cref="CreateCategoryModel"/>.</param>
         public BatchCategoryUploadConsumer(CatalogContext context, IMapper mapper,
             ILogger<BatchCategoryUploadConsumer> logger, IValidator<CreateCategoryModel> validator)
         {
@@ -53,9 +55,9 @@ namespace ProjectAPI.BatchUploadService
                 var result = await _validator.ValidateAsync(categoryModel);
                 if (!result.IsValid)
                 {
-                    // string errors = JsonSerializer.Serialize(result.ToDictionary());
-                    // throw new ArgumentException(errors); //TODO errors
-                    _logger.Log(LogLevel.Information, $"Category {i + 1} is invalid, moving to the next one.");
+                    string errors = Regex.Unescape(JsonSerializer.Serialize(result.ToDictionary()));
+                    _logger.Log(LogLevel.Information,
+                        $"Category {i + 1} is invalid, moving to the next one. Errors: \n" + errors);
                     continue;
                 }
 

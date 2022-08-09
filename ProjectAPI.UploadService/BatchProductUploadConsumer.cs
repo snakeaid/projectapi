@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
@@ -12,7 +14,7 @@ using ProjectAPI.DataAccess;
 using ProjectAPI.DataAccess.Primitives;
 using ProjectAPI.Primitives;
 
-namespace ProjectAPI.BatchUploadService
+namespace ProjectAPI.UploadService
 {
     public class BatchProductUploadConsumer : IConsumer<UploadRequest>
     {
@@ -55,9 +57,9 @@ namespace ProjectAPI.BatchUploadService
                 var result = await _validator.ValidateAsync(productModel);
                 if (!result.IsValid)
                 {
-                    // string errors = JsonSerializer.Serialize(result.ToDictionary());
-                    // throw new ArgumentException(errors); //TODO errors
-                    _logger.Log(LogLevel.Information, $"Product {i + 1} is invalid, moving to the next one.");
+                    string errors = Regex.Unescape(JsonSerializer.Serialize(result.ToDictionary()));
+                    _logger.Log(LogLevel.Information,
+                        $"Category {i + 1} is invalid, moving to the next one. Errors: \n" + errors);
                     continue;
                 }
 

@@ -9,7 +9,7 @@ using ProjectAPI.BusinessLogic.Extensions;
 using ProjectAPI.Mapping;
 using ProjectAPI.ModelValidation;
 
-namespace ProjectAPI.BatchUploadService
+namespace ProjectAPI.ProductService
 {
     public class Program
     {
@@ -38,10 +38,7 @@ namespace ProjectAPI.BatchUploadService
 
                     services.AddMassTransit(x =>
                     {
-                        x.AddConsumer<BatchCategoryUploadConsumer>()
-                            .Endpoint(e => e.Name = "categories-upload-queue");
-                        x.AddConsumer<BatchProductUploadConsumer>()
-                            .Endpoint(e => e.Name = "products-upload-queue");
+                        x.AddConsumers(Assembly.GetExecutingAssembly());
 
                         x.UsingRabbitMq((context, cfg) =>
                         {

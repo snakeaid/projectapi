@@ -1,7 +1,5 @@
-﻿using MassTransit;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using ProjectAPI.BatchUploadService;
 
 namespace ProjectAPI
 {
@@ -27,9 +25,6 @@ namespace ProjectAPI
         /// <returns><see cref="IHostBuilder"/></returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 }
