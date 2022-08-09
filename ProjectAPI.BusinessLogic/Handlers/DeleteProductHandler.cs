@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MassTransit;
 using MediatR;
@@ -11,7 +10,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
     /// <summary>
     /// This class represents a MediatR request handler for product deletion and implements
     /// <see cref="IRequestHandler{TRequest,TResponse}"/> for
-    /// <see cref="Delete"/>, <see cref="ProductModel"/>.
+    /// <see cref="DeleteProductRequest"/>, <see cref="ProductModel"/>.
     /// </summary>
     public class DeleteProductHandler : IRequestHandler<DeleteProductRequest, ProductModel>
     {
@@ -33,7 +32,6 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// <param name="request">An instance of <see cref="DeleteProductRequest"/>.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns><see cref="Task{TResult}"/> for <see cref="ProductModel"/></returns>
-        /// <exception cref="KeyNotFoundException">Thrown if there is no category found by the specified identifier.</exception>
         public async Task<ProductModel> Handle(DeleteProductRequest request, CancellationToken cancellationToken)
         {
             var productModel = new DeleteProductModel { Id = request.Id };

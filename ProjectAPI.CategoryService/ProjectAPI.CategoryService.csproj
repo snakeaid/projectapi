@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UserSecretsId>dotnet-CategoryService-FDD13355-9BA3-413E-9118-58F937288B2B</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.2.0"/>
+        <PackageReference Include="MassTransit" Version="8.0.5"/>
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.5"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.25"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ProjectAPI.BusinessLogic\ProjectAPI.BusinessLogic.csproj"/>
+        <ProjectReference Include="..\ProjectAPI.Mapping\ProjectAPI.Mapping.csproj"/>
+        <ProjectReference Include="..\ProjectAPI.ModelValidation\ProjectAPI.ModelValidation.csproj"/>
+    </ItemGroup>
+</Project>
