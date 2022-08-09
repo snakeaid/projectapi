@@ -13,6 +13,11 @@ using ProjectAPI.Primitives;
 
 namespace ProjectAPI.CategoryService
 {
+    /// <summary>
+    /// This class represents a MassTransit definition class which defines the behaviour
+    /// of <see cref="UpdateCategoryModelConsumer"/> and implements <see cref="ConsumerDefinition{TConsumer}"/>
+    /// for <see cref="UpdateCategoryModelConsumer"/>.
+    /// </summary>
     public class UpdateCategoryModelConsumerDefinition : ConsumerDefinition<UpdateCategoryModelConsumer>
     {
         protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
@@ -22,6 +27,11 @@ namespace ProjectAPI.CategoryService
         }
     }
 
+    /// <summary>
+    /// This class represents a MassTransit consumer class which consumes messages to update a category and implements
+    /// <see cref="IConsumer{TMessage}"/> for
+    /// <see cref="UpdateCategoryModel"/>.
+    /// </summary>
     public class UpdateCategoryModelConsumer : IConsumer<UpdateCategoryModel>
     {
         private readonly CatalogContext _context;
@@ -47,6 +57,12 @@ namespace ProjectAPI.CategoryService
             _validator = validator;
         }
 
+        /// <summary>
+        /// Consumes the message to update a category.
+        /// </summary>
+        /// <param name="context">An instance of <see cref="ConsumeContext{T}"/> for <see cref="UpdateCategoryModel"/>.</param>
+        /// <exception cref="ArgumentException">Thrown if the provided model of the category is invalid.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if there is no category found by the specified identifier.</exception>
         public async Task Consume(ConsumeContext<UpdateCategoryModel> context)
         {
             var categoryModel = context.Message;

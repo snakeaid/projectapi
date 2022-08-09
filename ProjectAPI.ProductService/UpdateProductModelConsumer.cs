@@ -13,6 +13,11 @@ using ProjectAPI.Primitives;
 
 namespace ProjectAPI.ProductService
 {
+    /// <summary>
+    /// This class represents a MassTransit definition class which defines the behaviour
+    /// of <see cref="UpdateProductModelConsumer"/> and implements <see cref="ConsumerDefinition{TConsumer}"/>
+    /// for <see cref="UpdateProductModelConsumer"/>.
+    /// </summary>
     public class UpdateProductModelConsumerDefinition : ConsumerDefinition<UpdateProductModelConsumer>
     {
         protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
@@ -22,6 +27,11 @@ namespace ProjectAPI.ProductService
         }
     }
 
+    /// <summary>
+    /// This class represents a MassTransit consumer class which consumes messages to update a product and implements
+    /// <see cref="IConsumer{TMessage}"/> for
+    /// <see cref="UpdateProductModel"/>.
+    /// </summary>
     public class UpdateProductModelConsumer : IConsumer<UpdateProductModel>
     {
         private readonly CatalogContext _context;
@@ -47,6 +57,12 @@ namespace ProjectAPI.ProductService
             _validator = validator;
         }
 
+        /// <summary>
+        /// Consumes the message to update a product.
+        /// </summary>
+        /// <param name="context">An instance of <see cref="ConsumeContext{T}"/> for <see cref="UpdateProductModel"/>.</param>
+        /// <exception cref="KeyNotFoundException">Thrown if there is no product found by the specified identifier.</exception>
+        /// <exception cref="ArgumentException">Thrown if the provided model of the product is invalid.</exception>
         public async Task Consume(ConsumeContext<UpdateProductModel> context)
         {
             var productModel = context.Message;

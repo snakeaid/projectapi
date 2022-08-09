@@ -16,6 +16,10 @@ using ProjectAPI.Primitives;
 
 namespace ProjectAPI.UploadService
 {
+    /// <summary>
+    /// This class represents a MassTransit consumer class which consumes messages to upload a batch of products
+    /// and implements <see cref="IConsumer{TMessage}"/> for <see cref="UploadRquest"/>.
+    /// </summary>
     public class BatchProductUploadConsumer : IConsumer<UploadRequest>
     {
         private readonly CatalogContext _context;
@@ -41,6 +45,10 @@ namespace ProjectAPI.UploadService
             _validator = validator;
         }
 
+        /// <summary>
+        /// Consumes the message to upload a batch of products.
+        /// </summary>
+        /// <param name="context">An instance of <see cref="ConsumeContext{T}"/> for <see cref="UploadRequest"/>.</param>
         public async Task Consume(ConsumeContext<UploadRequest> context)
         {
             var request = await _context.Requests.FirstOrDefaultAsync(r => r.Id == context.Message.Id);

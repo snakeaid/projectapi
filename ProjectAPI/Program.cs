@@ -5,7 +5,7 @@ namespace ProjectAPI
 {
     /// <summary>
     /// This class is the entry point of the application and is responsible for registering <see cref="Startup"/>
-    /// and create a host.
+    /// and creating a host.
     /// </summary>
     public class Program
     {

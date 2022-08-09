@@ -64,7 +64,7 @@ namespace ProjectAPI.Controllers
         /// <returns><see cref="IActionResult"/></returns>
         [HttpGet("{batchId}")]
         [AllowAnonymous]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
         public async Task<IActionResult> Status(Guid batchId)
         {

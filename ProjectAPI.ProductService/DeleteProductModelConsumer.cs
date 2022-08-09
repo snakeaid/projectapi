@@ -11,6 +11,11 @@ using ProjectAPI.Primitives;
 
 namespace ProjectAPI.ProductService
 {
+    /// <summary>
+    /// This class represents a MassTransit definition class which defines the behaviour
+    /// of <see cref="DeleteProductModelConsumer"/> and implements <see cref="ConsumerDefinition{TConsumer}"/>
+    /// for <see cref="DeleteProductModelConsumer"/>.
+    /// </summary>
     public class DeleteProductModelConsumerDefinition : ConsumerDefinition<DeleteProductModelConsumer>
     {
         protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
@@ -20,6 +25,11 @@ namespace ProjectAPI.ProductService
         }
     }
 
+    /// <summary>
+    /// This class represents a MassTransit consumer class which consumes messages to delete a product and implements
+    /// <see cref="IConsumer{TMessage}"/> for
+    /// <see cref="DeleteProductModel"/>.
+    /// </summary>
     public class DeleteProductModelConsumer : IConsumer<DeleteProductModel>
     {
         private readonly CatalogContext _context;
@@ -42,6 +52,11 @@ namespace ProjectAPI.ProductService
             _logger = logger;
         }
 
+        /// <summary>
+        /// Consumes the message to delete a product.
+        /// </summary>
+        /// <param name="context">An instance of <see cref="ConsumeContext{T}"/> for <see cref="DeleteProductModel"/>.</param>
+        /// /// <exception cref="KeyNotFoundException">Thrown if there is no product found by the specified identifier.</exception>
         public async Task Consume(ConsumeContext<DeleteProductModel> context)
         {
             var productModel = context.Message;

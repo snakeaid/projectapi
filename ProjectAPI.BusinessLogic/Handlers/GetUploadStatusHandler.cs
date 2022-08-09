@@ -16,11 +16,11 @@ namespace ProjectAPI.BusinessLogic.Handlers
     /// <see cref="IRequestHandler{TRequest,TResponse}"/> for
     /// <see cref="GetUploadStatusRequest"/>, <see cref="UploadRequestModel"/>.
     /// </summary>
-	public class GetUploadStatusHandler : IRequestHandler<GetUploadStatusRequest, UploadRequestModel>
+    public class GetUploadStatusHandler : IRequestHandler<GetUploadStatusRequest, UploadRequestModel>
     {
         private readonly CatalogContext _context;
-        private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Constructs an instance of <see cref="GetUploadStatusHandler"/> using the specified context, mapper and logger.
@@ -37,20 +37,23 @@ namespace ProjectAPI.BusinessLogic.Handlers
         }
 
         /// <summary>
-        /// Handles the specified request to get a category.
+        /// Handles the specified request to get a request status.
         /// </summary>
         /// <param name="request">An instance of <see cref="GetUploadStatusRequest"/>.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns><see cref="Task{TResult}"/> for <see cref="UploadRequestModel"/></returns>
-        /// <exception cref="KeyNotFoundException">Thrown if there is no category found by the specified identifier.</exception>
-        public async Task<UploadRequestModel> Handle(GetUploadStatusRequest request, CancellationToken cancellationToken)
+        /// <exception cref="KeyNotFoundException">Thrown if there is no request found by the specified identifier.</exception>
+        public async Task<UploadRequestModel> Handle(GetUploadStatusRequest request,
+            CancellationToken cancellationToken)
         {
             var uploadRequest = await _context.Requests.FirstOrDefaultAsync(r => r.Id == request.Id);
             if (uploadRequest == null)
             {
                 throw new KeyNotFoundException($"Request {request.Id} NOT FOUND");
             }
+
             var requestModel = _mapper.Map<UploadRequestModel>(uploadRequest);
+            _logger.Log(LogLevel.Information, $"Got upload status for request {request.Id} successfully.");
             return requestModel;
         }
     }

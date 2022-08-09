@@ -10,6 +10,11 @@ using ProjectAPI.Primitives;
 
 namespace ProjectAPI.CategoryService
 {
+    /// <summary>
+    /// This class represents a MassTransit definition class which defines the behaviour
+    /// of <see cref="DeleteCategoryModelConsumer"/> and implements <see cref="ConsumerDefinition{TConsumer}"/>
+    /// for <see cref="DeleteCategoryModelConsumer"/>.
+    /// </summary>
     public class DeleteCategoryModelConsumerDefinition : ConsumerDefinition<DeleteCategoryModelConsumer>
     {
         protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator,
@@ -19,6 +24,11 @@ namespace ProjectAPI.CategoryService
         }
     }
 
+    /// <summary>
+    /// This class represents a MassTransit consumer class which consumes messages to delete a category and implements
+    /// <see cref="IConsumer{TMessage}"/> for
+    /// <see cref="DeleteCategoryModel"/>.
+    /// </summary>
     public class DeleteCategoryModelConsumer : IConsumer<DeleteCategoryModel>
     {
         private readonly CatalogContext _context;
@@ -41,6 +51,12 @@ namespace ProjectAPI.CategoryService
             _logger = logger;
         }
 
+        /// <summary>
+        /// Consumes the message to delete a category.
+        /// </summary>
+        /// <param name="context">An instance of <see cref="ConsumeContext{T}"/> for <see cref="DeleteCategoryModel"/>.</param>
+        /// <exception cref="IndexOutOfRangeException">Thrown if the provided category id equals 1.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if there is no category found by the specified identifier.</exception>
         public async Task Consume(ConsumeContext<DeleteCategoryModel> context)
         {
             var categoryModel = context.Message;
