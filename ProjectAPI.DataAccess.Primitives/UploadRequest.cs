@@ -16,7 +16,7 @@ namespace ProjectAPI.DataAccess.Primitives
         /// <summary>
         /// Gets and sets the type of models in the uploaded file.
         /// </summary>
-        public CatalogEntityType Type { get; set; }
+        public BatchUploadType Type { get; set; }
 
         /// <summary>
         /// Gets and sets file contents encoded to a base64 string.

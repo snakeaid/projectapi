@@ -47,9 +47,9 @@ namespace ProjectAPI.ProductService
 
                     services.AddLoggingToFile();
 
-                    services.AddAutoMapper(typeof(AllMappersProfile));
+                    services.AddMapping();
 
-                    services.AddValidatorsFromAssemblyContaining<CreateProductModelValidator>();
+                    services.AddFluentValidation();
 
                     services.AddMassTransit(x =>
                     {

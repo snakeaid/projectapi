@@ -32,8 +32,8 @@
 // 				.UseInMemoryDatabase(Guid.NewGuid().ToString())
 // 				.Options;
 // 			mockContext = new CatalogContext(options);
-// 			mockContext.Categories.Add(new Category { Id = 2, Name = "Test category 2", Description = "Test description 2" });
-// 			mockContext.Categories.Add(new Category { Id = 3, Name = "Test category 3", Description = "Test description 3" });
+// 			mockContext.Category.Add(new Category { Id = 2, Name = "Test category 2", Description = "Test description 2" });
+// 			mockContext.Category.Add(new Category { Id = 3, Name = "Test category 3", Description = "Test description 3" });
 // 			mockContext.SaveChanges();
 //
 // 			mockLogger = new Mock<ILogger<DeleteCategoryHandler>>().Object;
@@ -90,7 +90,7 @@
 //
 // 			//Assert
 // 			var ex = await Assert.ThrowsAsync<KeyNotFoundException>(async () => await handler.Handle(request, default));
-// 			Assert.Equal($"Category {request.Id} NOT FOUND", ex.Message);
+// 			Assert.Equal($"Categories {request.Id} NOT FOUND", ex.Message);
 // 		}
 // 	}
 // }

@@ -45,7 +45,7 @@ namespace ProjectAPI
 
             services.AddLoggingToFile();
             
-            services.AddAutoMapper(typeof(AllMappersProfile));
+            services.AddMapping();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
@@ -65,7 +65,7 @@ namespace ProjectAPI
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("ProjectAPI.BusinessLogic"));
 
-            services.AddValidatorsFromAssemblyContaining<CreateProductModelValidator>();
+            services.AddFluentValidation();
 
             services.AddSwagger(Configuration);
             

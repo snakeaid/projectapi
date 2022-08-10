@@ -52,7 +52,7 @@ namespace ProjectAPI.Tests
 		public async Task GetAllProductsHandler_ReturnsAllProducts_IfAllOk()
 		{
 			//Arange
-			mockContext.Products.Add(new Product { Id = 2, Name = "Test Product", Description = "Test description", CategoryId = 1 });
+			mockContext.Products.Add(new Product { Id = 2, Name = "Test Products", Description = "Test description", CategoryId = 1 });
 			request = new GetAllProductsRequest { };
 
 			//Act

@@ -19,6 +19,6 @@ namespace ProjectAPI.BusinessLogic.Requests
         /// <summary>
         /// Gets and sets the type of entities to be uploaded.
         /// </summary>
-        public CatalogEntityType Type { get; set; }
+        public BatchUploadType Type { get; set; }
     }
 }

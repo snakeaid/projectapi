@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using ProjectAPI.DataAccess;
+using ProjectAPI.Mapping;
+using ProjectAPI.ModelValidation;
 
 namespace ProjectAPI.BusinessLogic.Extensions
 {
@@ -67,6 +70,30 @@ namespace ProjectAPI.BusinessLogic.Extensions
         public static IServiceCollection DisableAutomaticValidation(this IServiceCollection services)
         {
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+
+            return services;
+        }
+        
+        /// <summary>
+        /// Adds FluentValidation.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <returns><see cref="IServiceCollection"/></returns>
+        public static IServiceCollection AddFluentValidation(this IServiceCollection services)
+        {
+            services.AddValidatorsFromAssemblyContaining<CreateCategoryModelValidator>();
+
+            return services;
+        }
+        
+        /// <summary>
+        /// Adds AutoMapper.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        /// <returns><see cref="IServiceCollection"/></returns>
+        public static IServiceCollection AddMapping(this IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(AllMappersProfile));
 
             return services;
         }

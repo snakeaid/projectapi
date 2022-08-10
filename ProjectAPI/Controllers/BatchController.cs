@@ -39,7 +39,7 @@ namespace ProjectAPI.Controllers
         public async Task<IActionResult> UploadCategories(IFormFile file)
         {
             var result = await _mediator.Send(new BatchUploadRequest
-                { File = file, Type = CatalogEntityType.Category });
+                { File = file, Type = BatchUploadType.Categories });
             return Ok(result);
         }
 
@@ -54,7 +54,7 @@ namespace ProjectAPI.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
         public async Task<IActionResult> UploadProducts(IFormFile file)
         {
-            var result = await _mediator.Send(new BatchUploadRequest { File = file, Type = CatalogEntityType.Product });
+            var result = await _mediator.Send(new BatchUploadRequest { File = file, Type = BatchUploadType.Products });
             return Ok(result);
         }
 

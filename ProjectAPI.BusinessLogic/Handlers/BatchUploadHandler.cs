@@ -83,11 +83,11 @@ namespace ProjectAPI.BusinessLogic.Handlers
 
             switch (request.Type)
             {
-                case CatalogEntityType.Product:
+                case BatchUploadType.Products:
                     sendEndpoint = await _sendEndpointProvider
                         .GetSendEndpoint(new Uri("queue:products-upload-queue"));
                     break;
-                case CatalogEntityType.Category:
+                case BatchUploadType.Categories:
                     sendEndpoint = await _sendEndpointProvider
                         .GetSendEndpoint(new Uri("queue:categories-upload-queue"));
                     break;

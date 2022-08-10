@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProjectAPI.BusinessLogic\ProjectAPI.BusinessLogic.csproj" />
     <ProjectReference Include="..\ProjectAPI.DataAccess.Primitives\ProjectAPI.DataAccess.Primitives.csproj" />
     <ProjectReference Include="..\ProjectAPI.Primitives\ProjectAPI.Primitives.csproj" />
   </ItemGroup>
