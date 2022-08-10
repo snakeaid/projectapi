@@ -19,7 +19,7 @@ namespace ProjectAPI.BusinessLogic.Extensions
         /// <param name="request">An instance of <see cref="UploadRequest"/>.</param>
         /// <typeparam name="T">Type of objects in the list.</typeparam>
         /// <returns><see cref="List{T}"/>.</returns>
-        public static List<T> ParseIntoList<T>(this UploadRequest request) //TODO CSV handling
+        public static List<T> ParseIntoList<T>(this UploadRequest request)
         {
             var fileContents = Encoding.UTF8.GetString(Convert.FromBase64String(request.File));
             var list = new List<T>();
