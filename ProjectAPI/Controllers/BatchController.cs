@@ -31,9 +31,8 @@ namespace ProjectAPI.Controllers
         /// Handles the HTTP POST request to upload a csv/json file with categories.
         /// </summary>
         /// <returns><see cref="IActionResult"/></returns>
-        // [HttpPost("categories"), Authorize(Roles = "Manager")]
-        // [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        [HttpPost("categories"), AllowAnonymous]
+        [HttpPost("categories"), Authorize(Roles = "Manager")]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
         public async Task<IActionResult> UploadCategories(IFormFile file)
@@ -47,9 +46,8 @@ namespace ProjectAPI.Controllers
         /// Handles the HTTP POST request to upload a csv/json file with products.
         /// </summary>
         /// <returns><see cref="IActionResult"/></returns>
-        // [HttpPost("categories"), Authorize(Roles = "Manager")]
-        // [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        [HttpPost("products"), AllowAnonymous]
+        [HttpPost("products"), Authorize(Roles = "Manager")]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(Guid))]
         public async Task<IActionResult> UploadProducts(IFormFile file)
