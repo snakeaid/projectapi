@@ -1,37 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using AutoMapper;
-using ProjectAPI.DataAccess;
-using ProjectAPI.Primitives;
-using ProjectAPI.BusinessLogic.Requests;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProjectAPI.BusinessLogic.Requests;
+using ProjectAPI.DataAccess;
+using ProjectAPI.Primitives;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
     /// <summary>
     /// This class represents a MediatR request handler to get all product and implements
-    /// <see cref="IRequestHandler{TRequest, TResponse}"/> for
+    /// <see cref="IRequestHandler{TRequest,TResponse}"/> for
     /// <see cref="GetAllProductsRequest"/>, <see cref="List{T}"/> of <see cref="ProductModel"/>.
     /// </summary>
     public class GetAllProductsHandler : IRequestHandler<GetAllProductsRequest, List<ProductModel>>
     {
-        /// <summary>
-        /// An instance of <see cref="CatalogContext"/> which represents the current context.
-        /// </summary>
         private readonly CatalogContext _context;
-
-        /// <summary>
-        /// An instance of <see cref="IMapper"/> which is used for mapping.
-        /// </summary>
-        private readonly IMapper _mapper;
-
-        /// <summary>
-        /// An instance of <see cref="ILogger"/> which is used for logging.
-        /// </summary>
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
 
         /// <summary>
@@ -60,7 +49,7 @@ namespace ProjectAPI.BusinessLogic.Handlers
             var list = await _context.Products.ToListAsync();
             var listModel = _mapper.Map<List<ProductModel>>(list);
 
-            _logger.LogInformation($"Got all products sucessfully");
+            _logger.LogInformation($"Got all products successfully");
 
             return listModel;
         }

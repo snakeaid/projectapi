@@ -1,37 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using AutoMapper;
-using ProjectAPI.DataAccess;
-using ProjectAPI.Primitives;
-using ProjectAPI.BusinessLogic.Requests;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProjectAPI.BusinessLogic.Requests;
+using ProjectAPI.DataAccess;
+using ProjectAPI.Primitives;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
     /// <summary>
     /// This class represents a MediatR request handler to get all categories and implements
-    /// <see cref="IRequestHandler{TRequest, TResponse}"/> for
+    /// <see cref="IRequestHandler{TRequest,TResponse}"/> for
     /// <see cref="GetAllCategoriesRequest"/>, <see cref="List{T}"/> of <see cref="CategoryModel"/>.
     /// </summary>
     public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesRequest, List<CategoryModel>>
     {
-        /// <summary>
-        /// An instance of <see cref="CatalogContext"/> which represents the current context.
-        /// </summary>
         private readonly CatalogContext _context;
-
-        /// <summary>
-        /// An instance of <see cref="IMapper"/> which is used for mapping.
-        /// </summary>
-        private readonly IMapper _mapper;
-
-        /// <summary>
-        /// An instance of <see cref="ILogger"/> which is used for logging.
-        /// </summary>
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Constructs an instance of <see cref="GetAllCategoriesHandler"/> using the specified context, mapper and logger.
@@ -53,13 +42,14 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// <param name="request">An instance of <see cref="GetAllCategoriesRequest"/>.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns><see cref="Task{TResult}"/> for <see cref="List{T}"/> of <see cref="CategoryModel"/></returns>
-        public async Task<List<CategoryModel>> Handle(GetAllCategoriesRequest request, CancellationToken cancellationToken)
+        public async Task<List<CategoryModel>> Handle(GetAllCategoriesRequest request,
+            CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Getting all categories");
             var list = await _context.Categories.Include(c => c.Products).ToListAsync();
             var listModel = _mapper.Map<List<CategoryModel>>(list);
 
-            _logger.LogInformation($"Got all categories sucessfully");
+            _logger.LogInformation($"Got all categories successfully");
             return listModel;
         }
     }

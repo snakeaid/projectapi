@@ -1,15 +1,16 @@
 ﻿using System;
+using FluentValidation;
+using MassTransit;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using MediatR;
-using FluentValidation;
+using ProjectAPI.BusinessLogic.Extensions;
 using ProjectAPI.Mapping;
 using ProjectAPI.ModelValidation;
-using ProjectAPI.BusinessLogic.Extensions;
 
 namespace ProjectAPI
 {
@@ -44,7 +45,7 @@ namespace ProjectAPI
 
             services.AddLoggingToFile();
             
-            services.AddAutoMapper(typeof(AllMappersProfile));
+            services.AddMapping();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
@@ -64,9 +65,14 @@ namespace ProjectAPI
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("ProjectAPI.BusinessLogic"));
 
-            services.AddValidatorsFromAssemblyContaining<CreateProductModelValidator>();
+            services.AddFluentValidation();
 
             services.AddSwagger(Configuration);
+            
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq();
+            });
 
             services.AddControllersWithViews();
         }
@@ -90,7 +96,7 @@ namespace ProjectAPI
 
             app.UseCustomSwagger(Configuration);
             app.UseCustomExceptionMiddleware();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();

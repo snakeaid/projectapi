@@ -1,66 +1,31 @@
 ﻿using System;
-using System.Text.Json;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using MassTransit;
 using MediatR;
-using AutoMapper;
-using FluentValidation;
-using FluentValidation.Results;
-using ProjectAPI.Primitives;
-using ProjectAPI.DataAccess;
-using ProjectAPI.DataAccess.Primitives;
 using ProjectAPI.BusinessLogic.Requests;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using ProjectAPI.Primitives;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
     /// <summary>
     /// This class represents a MediatR request handler to update a category and implements
-    /// <see cref="IRequestHandler{TRequest, TResponse}"/> for
+    /// <see cref="IRequestHandler{TRequest,TResponse}"/> for
     /// <see cref="PutCategoryRequest"/>, <see cref="CategoryModel"/>.
     /// </summary>
     public class PutCategoryHandler : IRequestHandler<PutCategoryRequest, CategoryModel>
     {
-        /// <summary>
-        /// An instance of <see cref="CatalogContext"/> which represents the current context.
-        /// </summary>
-        private readonly CatalogContext _context;
+        private readonly IRequestClient<UpdateCategoryModel> _client;
 
         /// <summary>
-        /// An instance of <see cref="IMapper"/> which is used for mapping.
+        /// Constructs an instance of <see cref="PutCategoryHandler"/> using the request client.
         /// </summary>
-        private readonly IMapper _mapper;
-
-        /// <summary>
-        /// An instance of <see cref="ILogger"/> which is used for logging.
-        /// </summary>
-        private readonly ILogger _logger;
-
-        /// <summary>
-        /// An instance of <see cref="IValidator{T}"/> for <see cref="CategoryModel"/>
-        /// which is used for model validation.
-        /// </summary>
-        private readonly IValidator<UpdateCategoryModel> _validator;
-
-        /// <summary>
-        /// Constructs an instance of <see cref="PutCategoryHandler"/> using the specified context, mapper,
-        /// logger and validator.
-        /// </summary>
-        /// <param name="context">An instance of <see cref="CatalogContext"/>.</param>
-        /// <param name="mapper">An instance of <see cref="IMapper"/>.</param>
-        /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>
-        /// for <see cref="PostCategoryHandler"/>.</param>
-        /// <param name="validator">An instance of <see cref="IValidator{T}"/> for <see cref="CategoryModel"/>.</param>
-        public PutCategoryHandler(CatalogContext context, IMapper mapper, ILogger<PutCategoryHandler> logger,
-            IValidator<UpdateCategoryModel> validator)
+        /// <param name="client">An instance of <see cref="IRequestClient{TRequest}"/>
+        /// for <see cref="UpdateCategoryModel"/>.</param>
+        public PutCategoryHandler(IRequestClient<UpdateCategoryModel> client)
         {
-            _context = context;
-            _mapper = mapper;
-            _logger = logger;
-            _validator = validator;
+            _client = client;
         }
 
         /// <summary>
@@ -73,44 +38,9 @@ namespace ProjectAPI.BusinessLogic.Handlers
         /// <exception cref="KeyNotFoundException">Thrown if there is no category found by the specified identifier.</exception>
         public async Task<CategoryModel> Handle(PutCategoryRequest request, CancellationToken cancellationToken)
         {
-            UpdateCategoryModel categoryModel = request.CategoryModel;
-            if (!_context.Categories.Any(c => c.Id == request.Id))
-            {
-                throw new KeyNotFoundException($"Category {request.Id} NOT FOUND");
-            }
-            ValidationResult result = await _validator.ValidateAsync(categoryModel);
-            if (!result.IsValid)
-            {
-                string errors = JsonSerializer.Serialize(result.ToDictionary());
-                throw new ArgumentException(errors);
-            }
-
-            Category entity = _context.Categories.Include(c => c.Products).FirstOrDefault(c => c.Id == request.Id);
-            entity.Name = categoryModel.Name;
-            entity.Description = categoryModel.Description;
-
-            Dictionary<string, string> finalSpecifications;
-
-            foreach (Product product in entity.Products)
-            {
-                finalSpecifications = categoryModel.Specifications.ToDictionary(s => s, s => "");
-                foreach (KeyValuePair<string, string> keyValuePair in product.SpecificationData)
-                    if (finalSpecifications.ContainsKey(keyValuePair.Key)) finalSpecifications[keyValuePair.Key] = keyValuePair.Value;
-                product.SpecificationData = finalSpecifications;
-
-                _context.Products.Attach(product);
-                _context.Entry(product).State = EntityState.Modified;
-            }
-
-            entity.Specifications = categoryModel.Specifications;
-
-            _context.Categories.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation($"Updated category {request.Id} successfully");
-            return _mapper.Map<CategoryModel>(entity);
+            var categoryModel = request.CategoryModel;
+            var response = await _client.GetResponse<CategoryModel>(categoryModel);
+            return response.Message;
         }
     }
 }

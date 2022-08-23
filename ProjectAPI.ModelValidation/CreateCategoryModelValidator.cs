@@ -9,7 +9,7 @@ namespace ProjectAPI.ModelValidation
     public class CreateCategoryModelValidator : AbstractValidator<CreateCategoryModel>
     {
         /// <summary>
-        /// Constructs an instance of <see cref="CategoryModelValidator"/> class.
+        /// Constructs an instance of <see cref="CreateCategoryModelValidator"/> class.
         /// </summary>
         public CreateCategoryModelValidator()
         {

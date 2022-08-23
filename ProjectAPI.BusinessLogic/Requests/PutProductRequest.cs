@@ -10,11 +10,6 @@ namespace ProjectAPI.BusinessLogic.Requests
     public class PutProductRequest : IRequest<ProductModel>
     {
         /// <summary>
-        /// Gets and sets the unique identifier of the product to be updated.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// Gets and sets the <see cref="UpdateProductModel"/> model instance for the product which is to be updated.
         /// </summary>
         public UpdateProductModel ProductModel { get; set; }

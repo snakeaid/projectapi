@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "ProjectAPI.ProductService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

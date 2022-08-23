@@ -13,18 +13,17 @@ using System.Net;
 namespace ProjectAPI.Controllers
 {
 	/// <summary>
-	/// Controller class which controls authentication and derives from <see cref="ControllerBase"/>.
+	/// API controller class which controls authentication and derives from <see cref="ControllerBase"/>.
 	/// </summary>
+	[ApiController]
+	[Route("api/")]
 	public class AccountController : ControllerBase
 	{
 		/// <summary>
         /// List of all existing users.
         /// </summary>
 		private List<User> users = new List<User>() { new User { Login = "manager", Password = "12345", Role = "Manager" } };
-
-		/// <summary>
-		/// An instance of <see cref="ILogger"/> which is used for logging.
-		/// </summary>
+		
 		private readonly ILogger _logger;
 
 		/// <summary>
@@ -43,7 +42,7 @@ namespace ProjectAPI.Controllers
 		/// <param name="username">The name of the user.</param>
 		/// <param name="password">The password of the user.</param>
 		/// <returns><see cref="IActionResult"/></returns>
-		[HttpPost("/token")]
+		[HttpPost("authorize")]
 		[AllowAnonymous]
 		[ProducesResponseType((int)HttpStatusCode.OK)]
 		public IActionResult Token(string username, string password)

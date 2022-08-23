@@ -1,38 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using AutoMapper;
-using ProjectAPI.DataAccess;
-using ProjectAPI.DataAccess.Primitives;
-using ProjectAPI.Primitives;
-using ProjectAPI.BusinessLogic.Requests;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProjectAPI.BusinessLogic.Requests;
+using ProjectAPI.DataAccess;
+using ProjectAPI.Primitives;
 
 namespace ProjectAPI.BusinessLogic.Handlers
 {
     /// <summary>
     /// This class represents a MediatR request handler to get a product and implements
-    /// <see cref="IRequestHandler{TRequest, TResponse}"/> for
+    /// <see cref="IRequestHandler{TRequest,TResponse}"/> for
     /// <see cref="GetProductRequest"/>, <see cref="ProductModel"/>.
     /// </summary>
-	public class GetProductHandler : IRequestHandler<GetProductRequest, ProductModel>
+    public class GetProductHandler : IRequestHandler<GetProductRequest, ProductModel>
     {
-        /// <summary>
-        /// An instance of <see cref="CatalogContext"/> which represents the current context.
-        /// </summary>
         private readonly CatalogContext _context;
-
-        /// <summary>
-        /// An instance of <see cref="IMapper"/> which is used for mapping.
-        /// </summary>
-        private readonly IMapper _mapper;
-
-        /// <summary>
-        /// An instance of <see cref="ILogger"/> which is used for logging.
-        /// </summary>
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Constructs an instance of <see cref="GetProductHandler"/> using the specified context, mapper and logger.
@@ -58,11 +46,12 @@ namespace ProjectAPI.BusinessLogic.Handlers
         public async Task<ProductModel> Handle(GetProductRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Getting product {request.Id}");
-            Product product = await _context.Products.FirstOrDefaultAsync(p => p.Id == request.Id);
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == request.Id);
             if (product == null)
             {
                 throw new KeyNotFoundException($"Product {request.Id} NOT FOUND");
             }
+
             ProductModel productModel = _mapper.Map<ProductModel>(product);
 
             _logger.LogInformation($"Got product {request.Id} successfully");

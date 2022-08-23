@@ -27,10 +27,14 @@
     <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.1.0" />
+    <PackageReference Include="MassTransit.Abstractions" Version="8.0.5" />
     <PackageReference Include="MediatR" Version="10.0.1" />
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.26" />
     <PackageReference Include="FluentValidation" Version="11.1.0" />
+    <PackageReference Include="ServiceStack.Text" Version="6.2.0" />
     <PackageReference Include="System.Text.Json" Version="6.0.5" />
     <PackageReference Include="NSwag.Generation" Version="13.16.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
@@ -41,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectAPI.DataAccess.Primitives\ProjectAPI.DataAccess.Primitives.csproj" />
+    <ProjectReference Include="..\ProjectAPI.Mapping\ProjectAPI.Mapping.csproj" />
+    <ProjectReference Include="..\ProjectAPI.ModelValidation\ProjectAPI.ModelValidation.csproj" />
     <ProjectReference Include="..\ProjectAPI.Primitives\ProjectAPI.Primitives.csproj" />
     <ProjectReference Include="..\ProjectAPI.DataAccess\ProjectAPI.DataAccess.csproj" />
     <ProjectReference Include="..\ProjectAPI.Middleware\ProjectAPI.Middleware.csproj" />

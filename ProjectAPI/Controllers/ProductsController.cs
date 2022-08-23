@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 using MediatR;
-using ProjectAPI.Primitives;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjectAPI.BusinessLogic.Requests;
+using ProjectAPI.Primitives;
 
 namespace ProjectAPI.Controllers
 {
@@ -17,9 +16,6 @@ namespace ProjectAPI.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        /// <summary>
-        /// An instance of <see cref="IMediator"/> which is used for handling the incoming requests.
-        /// </summary>
         private readonly IMediator _mediator;
 
         /// <summary>
@@ -51,6 +47,7 @@ namespace ProjectAPI.Controllers
         /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
         /// <see cref="ProductModel"/></returns>
         [HttpGet("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ProductModel))]
         public async Task<IActionResult> Get(int id)
         {
@@ -66,6 +63,8 @@ namespace ProjectAPI.Controllers
         /// <see cref="ProductModel"/></returns>
         [HttpDelete("{id}"), Authorize(Roles = "Manager")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ProductModel))]
         public async Task<IActionResult> Delete(int id)
         {
@@ -81,10 +80,11 @@ namespace ProjectAPI.Controllers
         /// <see cref="ProductModel"/></returns>
         [HttpPost, Authorize(Roles = "Manager")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(ProductModel))]
-        public async Task<IActionResult> Post([FromBody] CreateProductModel ProductModel)
+        public async Task<IActionResult> Post([FromBody] CreateProductModel productModel)
         {
-            var result = await _mediator.Send(new PostProductRequest { ProductModel = ProductModel });
+            var result = await _mediator.Send(new PostProductRequest { ProductModel = productModel });
             return Ok(result);
         }
 
@@ -94,12 +94,14 @@ namespace ProjectAPI.Controllers
         /// </summary>
         /// <returns><see cref="Task{TResult}"/> for <see cref="ActionResult{TValue}"/> for
         /// <see cref="ProductModel"/></returns>
-        [HttpPut("{id}"), Authorize(Roles = "Manager")]
+        [HttpPut, Authorize(Roles = "Manager")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ProductModel))]
-        public async Task<IActionResult> Put(int id, [FromBody] UpdateProductModel productModel)
+        public async Task<IActionResult> Put([FromBody] UpdateProductModel productModel)
         {
-            var result = await _mediator.Send(new PutProductRequest { Id = id, ProductModel = productModel });
+            var result = await _mediator.Send(new PutProductRequest { ProductModel = productModel });
             return Ok(result);
         }
     }

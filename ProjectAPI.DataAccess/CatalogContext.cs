@@ -25,6 +25,11 @@ namespace ProjectAPI.DataAccess
 		/// Gets and sets the instance of <see cref="DbSet{Product}"/> for <see cref="Product"/>, used for database interactions.
 		/// </summary>
 		public DbSet<Product> Products { get; set; }
+		
+		/// <summary>
+		/// Gets and sets the instance of <see cref="DbSet{UploadRequest}"/> for <see cref="UploadRequest"/>, used for database interactions.
+		/// </summary>
+		public DbSet<UploadRequest> Requests { get; set; }
 
 		/// <summary>
         /// Constructs a new instance of <see cref="CatalogContext"/> class using the specified options.
@@ -33,7 +38,7 @@ namespace ProjectAPI.DataAccess
 		public CatalogContext(DbContextOptions<CatalogContext> options)
 			: base(options)
 		{
-		//	Database.EnsureDeleted();
+			//Database.EnsureDeleted();
 			Database.EnsureCreated();
 		}
 
